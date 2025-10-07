@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-site-verification" content="UIjp9tsxiLkb7FnHICG_Io62VqYojFejQ9e1xkOZFhs" />
+
+  <!-- Title & Description -->
+  <title>HerPrayerPlace – Find places with Female Prayer Facilities</title>
+  <meta name="description"
+    content="HerPrayerPlace helps you discover nearby places with women's prayer facilities. A simple way to find comfort and accessibility for prayer for muslim sisters." />
+  <meta name="keywords"
+    content="HerPrayerPlace, mosque finder, female mosque finder, women's prayer place, nearby mosques, female prayer facilities, Islamic prayer, masjid finder, herprayerplace, womens prayer place nearby" />
+  <meta name="author" content="HerPrayerPlace" />
+
+  <!-- Open Graph (Facebook, LinkedIn, etc.) -->
+  <meta property="og:title" content="HerPrayerPlace – Places with Female Prayer Facilities" />
+  <meta property="og:description" content="Find nearby places with women's prayer facilities using HerPrayerPlace." />
+  <meta property="og:image" content="https://herprayerplace.vercel.app/preview.png" />
+  <meta property="og:url" content="https://herprayerplace.vercel.app/" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="HerPrayerPlace – Places with Female Prayer Facilities" />
+  <meta name="twitter:description"
+    content="Discover places nearby with women's prayer facilities. Simple and accessible." />
+  <meta name="twitter:image" content="https://herprayerplace.vercel.app/preview.png" />
+
+  <link rel="icon" type="image/png" href="muslimah.png" />
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+
+  <style>
+    * {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      background-attachment: fixed;
+    }
+
+    /* ==================== MOBILE VIEW (Native App Style) ==================== */
+    @media (max-width: 768px) {
+      body {
+        background: #f5f7fa;
+        overflow: hidden;
+      }
+
+      body.dark-mode {
+        background: #1a202c;
+      }
+
+      .desktop-view {
+        display: none !important;
+      }
+
+      .mobile-view {
+        display: block !important;
+      }
+
+      /* Mobile App Container */
+      .mobile-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        background: #f5f7fa;
+      }
+
+      body.dark-mode .mobile-container {
+        background: #1a202c;
+      }
+
+      /* Mobile Header */
+      .mobile-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 15px;
+        z-index: 1000;
+      }
+
+      body.dark-mode .mobile-header {
+        background: #2d3748;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .hamburger-btn {
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .hamburger-line {
+        width: 25px;
+        height: 3px;
+        background: #667eea;
+        border-radius: 2px;
+        transition: all 0.3s;
+      }
+
+      body.dark-mode .hamburger-line {
+        background: #a78bfa;
+      }
+
+      .hamburger-btn.active .hamburger-line:nth-child(1) {
+        transform: rotate(45deg) translateY(8px);
+      }
+
+      .hamburger-btn.active .hamburger-line:nth-child(2) {
+        opacity: 0;
+      }
+
+      .hamburger-btn.active .hamburger-line:nth-child(3) {
+        transform: rotate(-45deg) translateY(-8px);
+      }
+
+      .mobile-logo {
+        font-size: 20px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      body.dark-mode .mobile-logo {
+        background: linear-gradient(135deg, #a78bfa 0%, #f093fb 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .dark-mode-toggle-mobile {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);
+      }
+
+      body.dark-mode .dark-mode-toggle-mobile {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+      }
+
+      /* Sidebar Menu */
+      .mobile-sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 280px;
+        height: 100%;
+        background: white;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 2000;
+        transition: left 0.3s ease;
+        overflow-y: auto;
+      }
+
+      body.dark-mode .mobile-sidebar {
+        background: #2d3748;
+      }
+
+      .mobile-sidebar.active {
+        left: 0;
+      }
+
+      .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1999;
+        display: none;
+      }
+
+      .sidebar-overlay.active {
+        display: block;
+      }
+
+      .sidebar-header {
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .sidebar-title {
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 5px;
+      }
+
+      .sidebar-subtitle {
+        font-size: 13px;
+        opacity: 0.9;
+      }
+
+      .sidebar-menu {
+        padding: 10px 0;
+      }
+
+      .sidebar-item {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        cursor: pointer;
+        transition: all 0.3s;
+        border-left: 3px solid transparent;
+        color: #2d3748;
+      }
+
+      body.dark-mode .sidebar-item {
+        color: #e2e8f0;
+      }
+
+      .sidebar-item:hover {
+        background: rgba(102, 126, 234, 0.1);
+        border-left-color: #667eea;
+      }
+
+      body.dark-mode .sidebar-item:hover {
+        background: rgba(167, 139, 250, 0.1);
+        border-left-color: #a78bfa;
+      }
+
+      .sidebar-item-icon {
+        font-size: 24px;
+      }
+
+      .sidebar-item-text {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      /* Map Container */
+      .mobile-map-container {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      #map {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+      }
+
+      /* Floating Action Buttons */
+      .fab-container {
+        position: fixed;
+        right: 15px;
+        bottom: 80px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        z-index: 900;
+      }
+
+      .fab {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        transition: all 0.3s;
+      }
+
+      body.dark-mode .fab {
+        background: #2d3748;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      .fab:active {
+        transform: scale(0.95);
+      }
+
+      .fab-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        width: 64px;
+        height: 64px;
+        font-size: 28px;
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+      }
+
+      /* Bottom Search Panel */
+      .bottom-search-panel {
+        position: fixed;
+        bottom: -100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        z-index: 950;
+        transition: bottom 0.3s ease;
+        max-height: 70vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      body.dark-mode .bottom-search-panel {
+        background: #2d3748;
+      }
+
+      .bottom-search-panel.active {
+        bottom: 0;
+      }
+
+      .search-panel-handle {
+        width: 40px;
+        height: 4px;
+        background: #cbd5e0;
+        border-radius: 2px;
+        margin: 12px auto 8px;
+      }
+
+      body.dark-mode .search-panel-handle {
+        background: #4a5568;
+      }
+
+      .search-panel-content {
+        padding: 20px;
+        overflow-y: auto;
+        flex: 1;
+      }
+
+      .search-panel-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 15px;
+      }
+
+      body.dark-mode .search-panel-title {
+        color: #e2e8f0;
+      }
+
+      .mobile-search-input {
+        width: 100%;
+        padding: 14px 20px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 15px;
+        margin-bottom: 12px;
+        background: #f7fafc;
+      }
+
+      body.dark-mode .mobile-search-input {
+        background: #1a202c;
+        border-color: #4a5568;
+        color: #e2e8f0;
+      }
+
+      .mobile-search-btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-bottom: 10px;
+      }
+
+      .mobile-view-all-btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #34d399 0%, #3b82f6 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      /* Distance Slider in Bottom Panel */
+      .distance-slider-mobile {
+        margin: 20px 0;
+        padding: 15px;
+        background: rgba(102, 126, 234, 0.05);
+        border-radius: 12px;
+      }
+
+      body.dark-mode .distance-slider-mobile {
+        background: rgba(167, 139, 250, 0.1);
+      }
+
+      .distance-label-mobile {
+        font-size: 14px;
+        font-weight: 600;
+        color: #667eea;
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      body.dark-mode .distance-label-mobile {
+        color: #a78bfa;
+      }
+
+      .distance-slider {
+        width: 100%;
+        height: 6px;
+        border-radius: 5px;
+        background: linear-gradient(to right, #667eea, #764ba2);
+        outline: none;
+        -webkit-appearance: none;
+        cursor: pointer;
+      }
+
+      .distance-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: white;
+        border: 3px solid #667eea;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+      }
+
+      .distance-slider::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: white;
+        border: 3px solid #667eea;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+      }
+
+      .distance-value-mobile {
+        text-align: center;
+        font-size: 18px;
+        font-weight: 800;
+        color: #667eea;
+        margin-top: 8px;
+      }
+
+      body.dark-mode .distance-value-mobile {
+        color: #a78bfa;
+      }
+
+      /* Suggestions in Mobile */
+      .suggestions-list-mobile {
+        background: #f7fafc;
+        border-radius: 12px;
+        margin-top: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      body.dark-mode .suggestions-list-mobile {
+        background: #1a202c;
+      }
+
+      .suggestion-item-mobile {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e2e8f0;
+        cursor: pointer;
+      }
+
+      body.dark-mode .suggestion-item-mobile {
+        border-bottom-color: #4a5568;
+        color: #e2e8f0;
+      }
+
+      .suggestion-item-mobile:hover {
+        background: rgba(102, 126, 234, 0.1);
+      }
+    }
+
+    /* ==================== DESKTOP VIEW (Original Design) ==================== */
+    @media (min-width: 769px) {
+      .mobile-view {
+        display: none !important;
+      }
+
+      .desktop-view {
+        display: block !important;
+      }
+
+      #map {
+        height: 550px;
+        width: 100%;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+      }
+
+      .gradient-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-size: 200% 200%;
+        animation: gradientShift 3s ease infinite;
+        transition: all 0.3s;
+      }
+
+      .gradient-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+      }
+
+      @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+
+      .gradient-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .search-btn {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        transition: all 0.3s;
+      }
+
+      .search-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+      }
+
+      .dark-mode-toggle {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        border: 3px solid white;
+        cursor: pointer;
+        box-shadow: 0 8px 25px rgba(251, 191, 36, 0.5);
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+      }
+
+      .dark-mode-toggle:hover {
+        transform: scale(1.15) rotate(15deg);
+        box-shadow: 0 12px 35px rgba(251, 191, 36, 0.7);
+      }
+
+      .admin-login-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        text-decoration: none;
+      }
+
+      body.dark-mode {
+        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%) !important;
+      }
+
+      body.dark-mode .glass-card {
+        background: rgba(45, 55, 72, 0.95) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: #e2e8f0 !important;
+      }
+
+      body.dark-mode .text-gray-600,
+      body.dark-mode .text-gray-700,
+      body.dark-mode .text-gray-800 {
+        color: #e2e8f0 !important;
+      }
+
+      body.dark-mode input {
+        background-color: rgba(26, 32, 44, 0.8) !important;
+        color: #e2e8f0 !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+      }
+
+      .distance-slider-compact {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 0 0 0;
+        margin-top: 20px;
+        border-top: 1px solid rgba(102, 126, 234, 0.2);
+      }
+
+      .distance-label-text {
+        font-size: 16px;
+        font-weight: 600;
+        color: #667eea;
+        white-space: nowrap;
+        min-width: 120px;
+      }
+
+      .distance-value-compact {
+        font-size: 20px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        min-width: 50px;
+        text-align: center;
+      }
+
+      .suggestions-container {
+        position: relative;
+      }
+
+      .suggestions-list {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 20px;
+        margin-top: 8px;
+        max-height: 300px;
+        overflow-y: auto;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        display: none;
+      }
+
+      .suggestions-list.active {
+        display: block;
+      }
+
+      .suggestion-item {
+        padding: 12px 20px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .suggestion-item:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .search-input-wrapper {
+        position: relative;
+        width: 100%;
+      }
+
+      .clear-btn {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: white;
+        transition: all 0.3s;
+        z-index: 10;
+        box-shadow: 0 4px 10px rgba(245, 87, 108, 0.3);
+      }
+
+      .clear-btn.active {
+        display: flex;
+      }
+
+      .suggest-banner {
+        background: linear-gradient(135deg, rgba(52, 211, 153, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+        border: 2px solid rgba(52, 211, 153, 0.3);
+        transition: all 0.3s;
+      }
+
+      .suggest-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #34d399 0%, #3b82f6 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        box-shadow: 0 6px 20px rgba(52, 211, 153, 0.4);
+      }
+
+      .suggest-banner-btn {
+        background: linear-gradient(135deg, #34d399 0%, #3b82f6 100%);
+        color: white;
+        font-weight: 700;
+        padding: 14px 32px;
+        border-radius: 30px;
+        text-decoration: none;
+        transition: all 0.3s;
+        box-shadow: 0 6px 20px rgba(52, 211, 153, 0.3);
+        font-size: 16px;
+        white-space: nowrap;
+      }
+
+      .pulse-btn {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7); }
+        50% { box-shadow: 0 0 0 20px rgba(102, 126, 234, 0); }
+      }
+    }
+
+    /* Mosque Modal (Both Views) */
+    .mosque-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .mosque-modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .mosque-modal-content {
+      background: white;
+      width: 100%;
+      max-width: 900px;
+      height: 85vh;
+      max-height: 800px;
+      border-radius: 30px;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    body.dark-mode .mosque-modal-content {
+      background: rgba(45, 55, 72, 0.98);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .mosque-modal-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 25px 30px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mosque-modal-title {
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .mosque-count {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 20px;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .mosque-modal-close {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid white;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 24px;
+      color: white;
+      transition: all 0.3s;
+    }
+
+    .mosque-modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 30px;
+    }
+
+    .district-filter-container {
+      padding: 15px 30px;
+      background: rgba(102, 126, 234, 0.05);
+      border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+    }
+
+    .district-filter-select {
+      width: 100%;
+      padding: 10px 15px;
+      border: 2px solid #667eea;
+      border-radius: 15px;
+      font-size: 15px;
+      background: white;
+      cursor: pointer;
+    }
+
+    .mosque-list-item {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+      border: 2px solid rgba(102, 126, 234, 0.2);
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .mosque-list-number {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .mosque-list-name {
+      flex: 1;
+      font-size: 17px;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    body.dark-mode .mosque-list-name {
+      color: #e2e8f0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Suggestion Popup */
+    .suggestion-popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 3000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .suggestion-popup.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .suggestion-popup-content {
+      background: white;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 30px;
+      padding: 40px;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+      position: relative;
+      text-align: center;
+    }
+
+    body.dark-mode .suggestion-popup-content {
+      background: rgba(45, 55, 72, 0.98);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .suggestion-popup-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(0, 0, 0, 0.1);
+      border: none;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      color: #666;
+    }
+
+    .suggestion-popup-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #34d399 0%, #3b82f6 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      box-shadow: 0 10px 30px rgba(52, 211, 153, 0.4);
+    }
+
+    .suggestion-popup-title {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 15px;
+    }
+
+    .suggestion-popup-text {
+      font-size: 16px;
+      color: #4a5568;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    body.dark-mode .suggestion-popup-text {
+      color: #cbd5e0;
+    }
+
+    .suggestion-popup-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .suggestion-popup-btn-primary {
+      background: linear-gradient(135deg, #34d399 0%, #3b82f6 100%);
+      color: white;
+      font-weight: 700;
+      padding: 16px 32px;
+      border-radius: 30px;
+      text-decoration: none;
+      transition: all 0.3s;
+      box-shadow: 0 6px 20px rgba(52, 211, 153, 0.3);
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .suggestion-popup-btn-secondary {
+      background: transparent;
+      color: #718096;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: 30px;
+      border: 2px solid #e2e8f0;
+      transition: all 0.3s;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .directions-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+      color: white !important;
+      padding: 8px 16px;
+      margin-top: 10px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+      border: none;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- DESKTOP VIEW -->
+  <div class="desktop-view">
+    <!-- Dark Mode Toggle Button -->
+    <button id="darkModeToggle" class="dark-mode-toggle" aria-label="Toggle Dark Mode">
+      🌙
+    </button>
+
+    <!-- Admin Login Button -->
+    <a href="admin.html" class="admin-login-btn" aria-label="Admin Login">
+      🔐
+    </a>
+
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+      <!-- Header -->
+      <div class="glass-card rounded-3xl shadow-2xl p-8 mb-8 transform hover:scale-105 transition-all duration-300">
+        <div class="text-center">
+          <h1 class="text-5xl md:text-6xl font-extrabold gradient-text mb-3">
+            HerPrayerPlace
+          </h1>
+          <p class="text-gray-600 text-lg md:text-xl font-medium">
+            ✨ Discover nearby places with female prayer facilities ✨
+          </p>
+        </div>
+      </div>
+
+      <!-- Find Nearby Button -->
+      <div class="glass-card rounded-3xl shadow-2xl p-6 mb-8">
+        <button id="findNearbyBtn"
+          class="w-full gradient-btn pulse-btn text-white font-bold py-4 px-8 rounded-full text-xl shadow-2xl transition duration-300">
+          📍 Find Nearby Places
+        </button>
+        <p id="statusMsg" class="text-sm font-medium mt-3 text-center"></p>
+      </div>
+
+      <!-- Map with Slider -->
+      <div class="glass-card rounded-3xl shadow-2xl p-6 mb-8">
+        <div id="map"></div>
+        <!-- Distance Slider Inside Map Section -->
+        <div class="distance-slider-compact">
+          <span class="distance-label-text">Search Radius:</span>
+          <input type="range" id="distanceSlider" min="0.5" max="5" step="0.5" value="1" class="distance-slider" />
+          <span class="distance-value-compact"><span id="distanceValue">1</span> km</span>
+        </div>
+      </div>
+
+      <!-- Search by Location -->
+      <div class="glass-card rounded-3xl shadow-2xl p-8 mb-8 search-section">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">
+          🔍 Find by Location
+        </h2>
+        <div class="flex flex-col gap-3">
+          <div class="suggestions-container">
+            <div class="search-input-wrapper">
+              <input type="text" id="searchInput" placeholder="Enter location name..." autocomplete="off"
+                class="w-full px-6 py-4 pr-14 border-2 border-purple-300 rounded-full focus:outline-none focus:ring-4 focus:ring-purple-400 text-lg font-medium shadow-lg" />
+              <button id="clearBtn" class="clear-btn" aria-label="Clear search">✕</button>
+            </div>
+            <div id="suggestionsList" class="suggestions-list"></div>
+          </div>
+          <button id="searchBtn"
+            class="search-btn text-white font-bold px-8 py-4 rounded-full text-lg shadow-lg w-full sm:w-auto">
+            Search Now
+          </button>
+          <button id="viewAllMosquesBtn"
+            class="gradient-btn text-white font-bold px-8 py-4 rounded-full text-lg shadow-lg w-full sm:w-auto">
+            View all the places
+          </button>
+        </div>
+      </div>
+
+      <!-- Suggest New Places Banner -->
+      <div class="glass-card rounded-3xl shadow-2xl p-6 mb-8 suggest-banner">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+          <div class="flex items-center gap-4">
+            <div class="suggest-icon">✨</div>
+            <div>
+              <h3 class="text-xl font-bold text-gray-800 mb-1">Know a Place We're Missing?</h3>
+              <p class="text-sm text-gray-600">Help other sisters by suggesting new locations!</p>
+            </div>
+          </div>
+          <a href="https://forms.gle/jp5V7YSX4GH7Gwpt6" class="suggest-banner-btn">
+            Suggest Now
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE VIEW -->
+  <div class="mobile-view" style="display: none;">
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+      <div class="mobile-logo">HerPrayerPlace</div>
+      <button class="dark-mode-toggle-mobile" id="darkModeToggleMobile" aria-label="Toggle Dark Mode">
+        🌙
+      </button>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Mobile Sidebar -->
+    <div class="mobile-sidebar" id="mobileSidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">HerPrayerPlace</div>
+        <div class="sidebar-subtitle">Find female prayer facilities</div>
+      </div>
+      <div class="sidebar-menu">
+        <div class="sidebar-item" id="sidebarSearch">
+          <span class="sidebar-item-icon">🔍</span>
+          <span class="sidebar-item-text">Search Location</span>
+        </div>
+        <div class="sidebar-item" id="sidebarViewAll">
+          <span class="sidebar-item-icon">🕌</span>
+          <span class="sidebar-item-text">View All Places</span>
+        </div>
+        <div class="sidebar-item" id="sidebarSuggest">
+          <span class="sidebar-item-icon">✨</span>
+          <span class="sidebar-item-text">Suggest a Place</span>
+        </div>
+        <div class="sidebar-item" id="sidebarAdmin">
+          <span class="sidebar-item-icon">🔐</span>
+          <span class="sidebar-item-text">Admin Login</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Map Container -->
+    <div class="mobile-map-container">
+      <div id="mapMobile"></div>
+    </div>
+
+    <!-- Floating Action Buttons -->
+    <div class="fab-container">
+      <button class="fab" id="fabSearch" title="Search">
+        🔍
+      </button>
+      <button class="fab fab-primary" id="fabLocate" title="Find Nearby">
+        📍
+      </button>
+    </div>
+
+    <!-- Bottom Search Panel -->
+    <div class="bottom-search-panel" id="bottomSearchPanel">
+      <div class="search-panel-handle"></div>
+      <div class="search-panel-content">
+        <h3 class="search-panel-title">🔍 Search Location</h3>
+
+        <input type="text" id="searchInputMobile" class="mobile-search-input" placeholder="Enter location name..." />
+        <div id="suggestionsListMobile" class="suggestions-list-mobile" style="display: none;"></div>
+
+        <div class="distance-slider-mobile">
+          <label class="distance-label-mobile">Search Radius: <span id="distanceValueMobile">1</span> km</label>
+          <input type="range" id="distanceSliderMobile" min="0.5" max="5" step="0.5" value="1" class="distance-slider" />
+        </div>
+
+        <button id="searchBtnMobile" class="mobile-search-btn">Search Now</button>
+        <button id="viewAllMosquesBtnMobile" class="mobile-view-all-btn">View All Places</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mosque List Modal -->
+  <div id="mosqueModal" class="mosque-modal">
+    <div class="mosque-modal-content">
+      <div class="mosque-modal-header">
+        <div>
+          <h2 class="mosque-modal-title">
+            🕌 All Female Prayer Places
+          </h2>
+          <span class="mosque-count" id="mosqueCount">0 Places</span>
+        </div>
+        <button id="closeMosqueModal" class="mosque-modal-close" aria-label="Close modal">✕</button>
+      </div>
+
+      <!-- District Filter -->
+      <div class="district-filter-container">
+        <label for="districtFilter" class="district-filter-label" style="display: block; font-weight: 600; color: #667eea; margin-bottom: 6px; font-size: 14px;">Filter by District:</label>
+        <select id="districtFilter" class="district-filter-select" onchange="filterByDistrict()">
+          <option value="all">All Districts</option>
+          <option value="Dhaka">Dhaka</option>
+          <option value="Chattogram">Chattogram</option>
+          <option value="Sylhet">Sylhet</option>
+          <option value="Rajshahi">Rajshahi</option>
+          <option value="Khulna">Khulna</option>
+          <option value="Barishal">Barishal</option>
+          <option value="Rangpur">Rangpur</option>
+          <option value="Mymensingh">Mymensingh</option>
+        </select>
+      </div>
+
+      <div class="mosque-modal-body" id="mosqueListContainer">
+        <!-- Mosque list will be populated here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Suggestion Popup Modal -->
+  <div id="suggestionPopup" class="suggestion-popup">
+    <div class="suggestion-popup-content">
+      <button id="closeSuggestionPopup" class="suggestion-popup-close" aria-label="Close">✕</button>
+      <div class="suggestion-popup-icon">✨</div>
+      <h3 class="suggestion-popup-title">Help Us Grow!</h3>
+      <p class="suggestion-popup-text">Know a place with female prayer facilities that we're missing? Your contribution
+        helps thousands of sisters!</p>
+      <div class="suggestion-popup-buttons">
+        <a href="https://forms.gle/jp5V7YSX4GH7Gwpt6" class="suggestion-popup-btn-primary">
+          ➕ Suggest a Place
+        </a>
+        <button id="maybeLaterBtn" class="suggestion-popup-btn-secondary">
+          Maybe Later
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyALo1YQ2M1GeoH9mORVV7dYSOl2FSCTc84",
+      authDomain: "herprayerplace.firebaseapp.com",
+      projectId: "herprayerplace",
+      storageBucket: "herprayerplace.firebasestorage.app",
+      messagingSenderId: "956020903317",
+      appId: "1:956020903317:web:030c848fbaa10d3e86ba9c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadMosques() {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'mosques'));
+        window.mosqueLocations = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          window.mosqueLocations.push({
+            name: data.name,
+            lat: data.lat,
+            lng: data.lng,
+            district: data.district || 'Other'
+          });
+        });
+
+        console.log('Loaded mosques:', window.mosqueLocations.length);
+
+        if (window.displayMosques) {
+          window.displayMosques();
+        }
+        if (window.populateMosqueList) {
+          window.populateMosqueList();
+        }
+
+      } catch (error) {
+        console.error('Error loading mosques:', error);
+      }
+    }
+
+    loadMosques();
+
+    // Mobile-specific JavaScript
+    const isMobile = window.innerWidth <= 768;
+
+    if (isMobile) {
+      // Hamburger menu functionality
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const mobileSidebar = document.getElementById('mobileSidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+      function toggleSidebar() {
+        hamburgerBtn.classList.toggle('active');
+        mobileSidebar.classList.toggle('active');
+        sidebarOverlay.classList.toggle('active');
+      }
+
+      hamburgerBtn.addEventListener('click', toggleSidebar);
+      sidebarOverlay.addEventListener('click', toggleSidebar);
+
+      // Sidebar menu items
+      document.getElementById('sidebarSearch').addEventListener('click', () => {
+        toggleSidebar();
+        document.getElementById('bottomSearchPanel').classList.add('active');
+      });
+
+      document.getElementById('sidebarViewAll').addEventListener('click', () => {
+        toggleSidebar();
+        document.getElementById('viewAllMosquesBtnMobile').click();
+      });
+
+      document.getElementById('sidebarSuggest').addEventListener('click', () => {
+        window.open('https://forms.gle/jp5V7YSX4GH7Gwpt6', '_blank');
+      });
+
+      document.getElementById('sidebarAdmin').addEventListener('click', () => {
+        window.location.href = 'admin.html';
+      });
+
+      // FAB buttons
+      document.getElementById('fabSearch').addEventListener('click', () => {
+        const panel = document.getElementById('bottomSearchPanel');
+        panel.classList.toggle('active');
+      });
+
+      document.getElementById('fabLocate').addEventListener('click', () => {
+        if (window.findNearbyPlaces) {
+          window.findNearbyPlaces();
+        }
+      });
+
+      // Mobile dark mode toggle
+      document.getElementById('darkModeToggleMobile').addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const icon = document.getElementById('darkModeToggleMobile');
+        icon.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+      });
+
+      // Distance slider mobile
+      const distanceSliderMobile = document.getElementById('distanceSliderMobile');
+      const distanceValueMobile = document.getElementById('distanceValueMobile');
+
+      distanceSliderMobile.addEventListener('input', (e) => {
+        distanceValueMobile.textContent = e.target.value;
+        if (window.updateSearchRadius) {
+          window.updateSearchRadius(parseFloat(e.target.value));
+        }
+      });
+
+      // Mobile search functionality
+      const searchInputMobile = document.getElementById('searchInputMobile');
+      const suggestionsListMobile = document.getElementById('suggestionsListMobile');
+
+      searchInputMobile.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        if (query.length > 0 && window.mosqueLocations) {
+          const filtered = window.mosqueLocations.filter(m =>
+            m.name.toLowerCase().includes(query)
+          ).slice(0, 5);
+
+          if (filtered.length > 0) {
+            suggestionsListMobile.innerHTML = filtered.map(m =>
+              `<div class="suggestion-item-mobile" data-name="${m.name}">${m.name}</div>`
+            ).join('');
+            suggestionsListMobile.style.display = 'block';
+          } else {
+            suggestionsListMobile.style.display = 'none';
+          }
+        } else {
+          suggestionsListMobile.style.display = 'none';
+        }
+      });
+
+      suggestionsListMobile.addEventListener('click', (e) => {
+        if (e.target.classList.contains('suggestion-item-mobile')) {
+          searchInputMobile.value = e.target.dataset.name;
+          suggestionsListMobile.style.display = 'none';
+        }
+      });
+
+      document.getElementById('searchBtnMobile').addEventListener('click', () => {
+        if (window.searchLocation) {
+          window.searchLocation(searchInputMobile.value);
+          document.getElementById('bottomSearchPanel').classList.remove('active');
+        }
+      });
+
+      document.getElementById('viewAllMosquesBtnMobile').addEventListener('click', () => {
+        document.getElementById('mosqueModal').classList.add('active');
+      });
+    }
+  </script>
+
+</body>
+
+</html>

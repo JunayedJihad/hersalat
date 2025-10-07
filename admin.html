@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - HerPrayerPlace</title>
+  <link rel="icon" type="image/png" href="muslimah.png" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+      font-size: 32px;
+    }
+
+    h2 {
+      color: #667eea;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      border: 2px solid #667eea;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 10px 0;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .success {
+      background: #10b981;
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 10px 0;
+      display: none;
+    }
+
+    .error {
+      background: #ef4444;
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 10px 0;
+      display: none;
+    }
+
+    .warning {
+      background: #f59e0b;
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 10px 0;
+      display: none;
+    }
+
+    .info {
+      background: #f3f4f6;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 10px 0;
+      border-left: 4px solid #667eea;
+    }
+
+    .mosque-item {
+      background: #f9fafb;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #e5e7eb;
+    }
+
+    .mosque-item.duplicate {
+      background: #fef3c7;
+      border: 2px solid #f59e0b;
+    }
+
+    .delete-btn {
+      width: auto;
+      padding: 8px 15px;
+      background: #ef4444;
+      font-size: 14px;
+    }
+
+    .loading {
+      text-align: center;
+      color: #667eea;
+      font-weight: bold;
+      display: none;
+    }
+
+    #extractedInfo {
+      background: #ecfdf5;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 15px 0;
+      border: 2px solid #10b981;
+      display: none;
+    }
+
+    #extractedInfo p {
+      margin: 8px 0;
+      font-size: 16px;
+    }
+
+    .logout-btn {
+      width: auto;
+      padding: 10px 20px;
+      background: #ef4444;
+      float: right;
+    }
+
+    .search-bar {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    .search-bar input {
+      padding-right: 45px;
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font-size: 12px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-clear.active {
+      display: flex;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 20px;
+      color: #6b7280;
+    }
+
+    .bulk-update-btn {
+      background: #f59e0b !important;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      input,
+      textarea,
+      select {
+        padding: 12px;
+        font-size: 14px;
+      }
+
+      button {
+        padding: 12px;
+        font-size: 16px;
+      }
+
+      .mosque-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .delete-btn {
+        width: 100%;
+      }
+
+      .logout-btn {
+        float: none;
+        width: 100%;
+        margin-bottom: 15px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 20px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      .info ol {
+        margin-left: 15px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="loginScreen"
+    style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div
+      style="background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); max-width: 400px; width: 100%;">
+      <h2 style="margin-bottom: 20px; color: #667eea; text-align: center;">Admin Login</h2>
+      <input type="email" id="adminEmail" placeholder="Email"
+        style="width: 100%; padding: 15px; border: 2px solid #667eea; border-radius: 10px; font-size: 16px; margin-bottom: 10px;">
+      <input type="password" id="adminPassword" placeholder="Password"
+        style="width: 100%; padding: 15px; border: 2px solid #667eea; border-radius: 10px; font-size: 16px;">
+      <button onclick="login()"
+        style="width: 100%; padding: 15px; margin-top: 10px; background: #667eea; color: white; border: none; border-radius: 10px; font-size: 16px; cursor: pointer;">Login</button>
+      <p id="loginError" style="color: red; margin-top: 10px; display: none; text-align: center;">Login failed</p>
+    </div>
+  </div>
+
+  <div id="adminPanel" style="display: none;">
+    <div class="container">
+      <!-- Header -->
+      <div class="card">
+        <button class="logout-btn" onclick="logout()">Logout</button>
+        <h1>HerPrayerPlace Admin Panel</h1>
+        <p style="color: #6b7280;">Manage mosque locations</p>
+      </div>
+
+      <!-- Add New Mosque -->
+      <div class="card">
+        <h2>Add New Mosque</h2>
+
+        <div class="info">
+          <strong>Instructions:</strong>
+          <ol style="margin-left: 20px; margin-top: 10px;">
+            <li>Paste any Google Maps link</li>
+            <li>For short links: click it first, then copy the full URL</li>
+            <li>Click "Extract Coordinates"</li>
+            <li>Select the district (auto-detected)</li>
+            <li>System will check for duplicates automatically</li>
+            <li>Verify and click "Add to Database"</li>
+          </ol>
+        </div>
+
+        <input type="text" id="mapsLink" placeholder="Paste Google Maps link here..."
+          oninput="clearDuplicateHighlights()">
+        <button onclick="extractCoordinates()" id="extractBtn">Extract Coordinates</button>
+
+        <div class="loading" id="loading">Processing...</div>
+
+        <div id="extractedInfo">
+          <h3 style="color: #10b981; margin-bottom: 10px;">Extracted Information:</h3>
+          <p><strong>Name:</strong> <span id="extractedName"></span></p>
+          <p><strong>Latitude:</strong> <span id="extractedLat"></span></p>
+          <p><strong>Longitude:</strong> <span id="extractedLng"></span></p>
+          <input type="text" id="editName" placeholder="Edit name if needed..." style="margin-top: 10px;">
+
+          <select id="districtSelect">
+            <option value="">Select District</option>
+            <option value="Bagerhat">Bagerhat</option>
+            <option value="Bandarban">Bandarban</option>
+            <option value="Barguna">Barguna</option>
+            <option value="Barishal">Barishal</option>
+            <option value="Bhola">Bhola</option>
+            <option value="Bogura">Bogura</option>
+            <option value="Brahmanbaria">Brahmanbaria</option>
+            <option value="Chandpur">Chandpur</option>
+            <option value="Chapainawabganj">Chapainawabganj</option>
+            <option value="Chattogram">Chattogram</option>
+            <option value="Chuadanga">Chuadanga</option>
+            <option value="Cox's Bazar">Cox's Bazar</option>
+            <option value="Cumilla">Cumilla</option>
+            <option value="Dhaka">Dhaka</option>
+            <option value="Dinajpur">Dinajpur</option>
+            <option value="Faridpur">Faridpur</option>
+            <option value="Feni">Feni</option>
+            <option value="Gaibandha">Gaibandha</option>
+            <option value="Gazipur">Gazipur</option>
+            <option value="Gopalganj">Gopalganj</option>
+            <option value="Habiganj">Habiganj</option>
+            <option value="Jamalpur">Jamalpur</option>
+            <option value="Jashore">Jashore</option>
+            <option value="Jhalokathi">Jhalokathi</option>
+            <option value="Jhenaidah">Jhenaidah</option>
+            <option value="Joypurhat">Joypurhat</option>
+            <option value="Khagrachhari">Khagrachhari</option>
+            <option value="Khulna">Khulna</option>
+            <option value="Kishoreganj">Kishoreganj</option>
+            <option value="Kurigram">Kurigram</option>
+            <option value="Kushtia">Kushtia</option>
+            <option value="Lakshmipur">Lakshmipur</option>
+            <option value="Lalmonirhat">Lalmonirhat</option>
+            <option value="Madaripur">Madaripur</option>
+            <option value="Magura">Magura</option>
+            <option value="Manikganj">Manikganj</option>
+            <option value="Meherpur">Meherpur</option>
+            <option value="Moulvibazar">Moulvibazar</option>
+            <option value="Munshiganj">Munshiganj</option>
+            <option value="Mymensingh">Mymensingh</option>
+            <option value="Naogaon">Naogaon</option>
+            <option value="Narail">Narail</option>
+            <option value="Narayanganj">Narayanganj</option>
+            <option value="Narsingdi">Narsingdi</option>
+            <option value="Natore">Natore</option>
+            <option value="Netrokona">Netrokona</option>
+            <option value="Nilphamari">Nilphamari</option>
+            <option value="Noakhali">Noakhali</option>
+            <option value="Pabna">Pabna</option>
+            <option value="Panchagarh">Panchagarh</option>
+            <option value="Patuakhali">Patuakhali</option>
+            <option value="Pirojpur">Pirojpur</option>
+            <option value="Rajbari">Rajbari</option>
+            <option value="Rajshahi">Rajshahi</option>
+            <option value="Rangamati">Rangamati</option>
+            <option value="Rangpur">Rangpur</option>
+            <option value="Satkhira">Satkhira</option>
+            <option value="Shariatpur">Shariatpur</option>
+            <option value="Sherpur">Sherpur</option>
+            <option value="Sirajganj">Sirajganj</option>
+            <option value="Sunamganj">Sunamganj</option>
+            <option value="Sylhet">Sylhet</option>
+            <option value="Tangail">Tangail</option>
+            <option value="Thakurgaon">Thakurgaon</option>
+          </select>
+
+          <button onclick="addToDatabase()" id="addBtn">Add to Database</button>
+        </div>
+
+        <div class="warning" id="warningMsg"></div>
+        <div class="success" id="successMsg">Mosque added successfully!</div>
+        <div class="error" id="errorMsg">Error: Something went wrong</div>
+      </div>
+
+      <!-- Mosque List -->
+      <div class="card">
+        <h2>All Mosques (Total: <span id="totalCount">0</span>)</h2>
+
+        <button onclick="loadMosques()" style="background: #10b981;">Refresh List</button>
+        <!-- <button onclick="previewMigration()" style="background: #3b82f6 !important;">Preview Migration (Safe)</button> -->
+        <!-- <button onclick="migrateToDistricts()" class="bulk-update-btn">Migrate Division → District</button> -->
+
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Search by name or location..." onkeyup="searchMosques()">
+          <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+        </div>
+
+        <div id="mosqueList" style="margin-top: 20px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, deleteField } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyALo1YQ2M1GeoH9mORVV7dYSOl2FSCTc84",
+      authDomain: "herprayerplace.firebaseapp.com",
+      projectId: "herprayerplace",
+      storageBucket: "herprayerplace.firebasestorage.app",
+      messagingSenderId: "956020903317",
+      appId: "1:956020903317:web:030c848fbaa10d3e86ba9c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    window.db = db;
+    window.auth = auth;
+    window.collection = collection;
+    window.addDoc = addDoc;
+    window.getDocs = getDocs;
+    window.deleteDoc = deleteDoc;
+    window.doc = doc;
+    window.updateDoc = updateDoc;
+    window.deleteField = deleteField;
+    window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+    window.signOut = signOut;
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+        loadMosques();
+      } else {
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('adminPanel').style.display = 'none';
+      }
+    });
+  </script>
+
+  <script>
+    let extractedData = null;
+    let allMosques = [];
+    let currentDuplicates = [];
+
+    async function login() {
+      const email = document.getElementById('adminEmail').value.trim();
+      const password = document.getElementById('adminPassword').value;
+      const errorEl = document.getElementById('loginError');
+
+      if (!email || !password) {
+        errorEl.textContent = 'Please enter email and password';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      try {
+        await window.signInWithEmailAndPassword(window.auth, email, password);
+        errorEl.style.display = 'none';
+      } catch (error) {
+        if (error.code === 'auth/network-request-failed') {
+          errorEl.textContent = 'Network error. Check your connection.';
+        } else {
+          errorEl.textContent = 'Invalid email or password';
+        }
+        errorEl.style.display = 'block';
+      }
+    }
+
+    async function logout() {
+      await window.signOut(window.auth);
+    }
+
+    function clearDuplicateHighlights() {
+      document.querySelectorAll('.mosque-item').forEach(item => {
+        item.classList.remove('duplicate');
+      });
+
+      document.getElementById('warningMsg').style.display = 'none';
+
+      if (document.getElementById('mapsLink').value.trim() === '') {
+        document.getElementById('extractedInfo').style.display = 'none';
+        extractedData = null;
+      }
+
+      currentDuplicates = [];
+      displayMosques(allMosques);
+    }
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = ((lat2 - lat1) * Math.PI) / 180;
+      const dLon = ((lon2 - lon1) * Math.PI) / 180;
+      const a = Math.sin(dLat / 2) ** 2 +
+        Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) ** 2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    async function checkForDuplicates(lat, lng, name) {
+      const duplicates = [];
+
+      for (const mosque of allMosques) {
+        const distance = calculateDistance(lat, lng, mosque.lat, mosque.lng);
+
+        if (distance < 0.05) {
+          duplicates.push({
+            ...mosque,
+            distance: distance,
+            reason: 'Same location'
+          });
+        }
+        else if (mosque.name.toLowerCase() === name.toLowerCase()) {
+          duplicates.push({
+            ...mosque,
+            distance: distance,
+            reason: 'Same name'
+          });
+        }
+      }
+
+      return duplicates;
+    }
+
+    function autoDetectDistrict(name, lat, lng) {
+      const lowerName = name.toLowerCase();
+
+      const districtKeywords = {
+        'Bagerhat': ['bagerhat'],
+        'Bandarban': ['bandarban'],
+        'Barguna': ['barguna'],
+        'Barishal': ['barishal', 'barisal'],
+        'Bhola': ['bhola'],
+        'Bogura': ['bogura', 'bogra'],
+        'Brahmanbaria': ['brahmanbaria', 'brahman baria'],
+        'Chandpur': ['chandpur'],
+        'Chapainawabganj': ['chapainawabganj', 'chapai nawabganj', 'nawabganj'],
+        'Chattogram': ['chattogram', 'chittagong', 'chattagram'],
+        'Chuadanga': ['chuadanga'],
+        "Cox's Bazar": ["cox's bazar", "cox bazar", "coxs bazar", "coxsbazar"],
+        'Cumilla': ['cumilla', 'comilla'],
+        'Dhaka': ['dhaka', 'dhanmondi', 'mirpur', 'uttara', 'gulshan', 'banani', 'mohammadpur', 'badda', 'rampura', 'khilgaon', 'jatrabari', 'shahbag', 'tejgaon', 'motijheel', 'paltan', 'panthapath', 'farmgate', 'karwan bazar', 'shantinagar', 'malibagh', 'bailey road', 'kakrail', 'segunbagicha'],
+        'Dinajpur': ['dinajpur'],
+        'Faridpur': ['faridpur'],
+        'Feni': ['feni'],
+        'Gaibandha': ['gaibandha'],
+        'Gazipur': ['gazipur'],
+        'Gopalganj': ['gopalganj'],
+        'Habiganj': ['habiganj', 'habigonj'],
+        'Jamalpur': ['jamalpur'],
+        'Jashore': ['jashore', 'jessore'],
+        'Jhalokathi': ['jhalokathi', 'jhalakathi'],
+        'Jhenaidah': ['jhenaidah', 'jhenidah'],
+        'Joypurhat': ['joypurhat'],
+        'Khagrachhari': ['khagrachhari', 'khagrachari'],
+        'Khulna': ['khulna'],
+        'Kishoreganj': ['kishoreganj', 'kishoregonj'],
+        'Kurigram': ['kurigram'],
+        'Kushtia': ['kushtia'],
+        'Lakshmipur': ['lakshmipur', 'laxmipur'],
+        'Lalmonirhat': ['lalmonirhat'],
+        'Madaripur': ['madaripur'],
+        'Magura': ['magura'],
+        'Manikganj': ['manikganj'],
+        'Meherpur': ['meherpur'],
+        'Moulvibazar': ['moulvibazar', 'moulvi bazar'],
+        'Munshiganj': ['munshiganj', 'munshigonj'],
+        'Mymensingh': ['mymensingh', 'mymensing'],
+        'Naogaon': ['naogaon'],
+        'Narail': ['narail'],
+        'Narayanganj': ['narayanganj', 'narayangonj'],
+        'Narsingdi': ['narsingdi'],
+        'Natore': ['natore'],
+        'Netrokona': ['netrokona', 'netrakona'],
+        'Nilphamari': ['nilphamari'],
+        'Noakhali': ['noakhali'],
+        'Pabna': ['pabna'],
+        'Panchagarh': ['panchagarh'],
+        'Patuakhali': ['patuakhali'],
+        'Pirojpur': ['pirojpur'],
+        'Rajbari': ['rajbari'],
+        'Rajshahi': ['rajshahi'],
+        'Rangamati': ['rangamati'],
+        'Rangpur': ['rangpur'],
+        'Satkhira': ['satkhira', 'shatkhira'],
+        'Shariatpur': ['shariatpur'],
+        'Sherpur': ['sherpur'],
+        'Sirajganj': ['sirajganj', 'sirajgonj'],
+        'Sunamganj': ['sunamganj', 'sunamgonj'],
+        'Sylhet': ['sylhet', 'silhet'],
+        'Tangail': ['tangail'],
+        'Thakurgaon': ['thakurgaon']
+      };
+
+      for (const [district, keywords] of Object.entries(districtKeywords)) {
+        if (keywords.some(keyword => lowerName.includes(keyword))) {
+          return district;
+        }
+      }
+
+      return '';
+    }
+
+    function extractCoordinates() {
+      const link = document.getElementById('mapsLink').value.trim();
+
+      if (!link) {
+        showError('Please paste a Google Maps link');
+        return;
+      }
+
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('extractedInfo').style.display = 'none';
+      document.getElementById('warningMsg').style.display = 'none';
+
+      try {
+        if (link.includes('goo.gl') || link.includes('maps.app.goo.gl')) {
+          showError('Short link detected! Open it in browser first, then copy the full URL');
+          document.getElementById('loading').style.display = 'none';
+          return;
+        }
+
+        let lat, lng, name = "Unknown Location";
+
+        const patterns = [
+          /@(-?\d+\.\d+),(-?\d+\.\d+)/,
+          /\?q=(-?\d+\.\d+),(-?\d+\.\d+)/,
+          /!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/,
+          /ll=(-?\d+\.\d+),(-?\d+\.\d+)/,
+          /center=(-?\d+\.\d+),(-?\d+\.\d+)/
+        ];
+
+        let match = null;
+        for (const pattern of patterns) {
+          match = link.match(pattern);
+          if (match) {
+            lat = parseFloat(match[1]);
+            lng = parseFloat(match[2]);
+            break;
+          }
+        }
+
+        if (!match) {
+          showError('Could not extract coordinates. Make sure you copied the full URL');
+          document.getElementById('loading').style.display = 'none';
+          return;
+        }
+
+        if (lat < 20.5 || lat > 26.6 || lng < 88.0 || lng > 92.7) {
+          showWarning('Warning: These coordinates appear to be outside Bangladesh!');
+        }
+
+        const placeMatch = link.match(/place\/([^\/]+)/);
+        if (placeMatch) {
+          name = decodeURIComponent(placeMatch[1].replace(/\+/g, ' '));
+        }
+
+        extractedData = { name, lat, lng };
+
+        const suggestedDistrict = autoDetectDistrict(name, lat, lng);
+        document.getElementById('districtSelect').value = suggestedDistrict;
+
+        checkForDuplicates(lat, lng, name).then(duplicates => {
+          currentDuplicates = duplicates;
+
+          if (duplicates.length > 0) {
+            let warningMsg = '<strong>⚠️ Potential duplicate(s) found:</strong><br>';
+            duplicates.forEach(dup => {
+              warningMsg += `• ${dup.name} (${dup.reason}, ${(dup.distance * 1000).toFixed(0)}m away)<br>`;
+            });
+            warningMsg += '<br>Please verify before adding!';
+            showWarning(warningMsg);
+
+            displayMosques(duplicates);
+
+            setTimeout(() => {
+              highlightDuplicates(duplicates);
+            }, 100);
+          } else {
+            displayMosques(allMosques);
+          }
+
+          document.getElementById('extractedName').textContent = name;
+          document.getElementById('extractedLat').textContent = lat;
+          document.getElementById('extractedLng').textContent = lng;
+          document.getElementById('editName').value = name;
+          document.getElementById('extractedInfo').style.display = 'block';
+          document.getElementById('loading').style.display = 'none';
+        });
+
+      } catch (error) {
+        showError('Error processing link: ' + error.message);
+        document.getElementById('loading').style.display = 'none';
+      }
+    }
+
+    function highlightDuplicates(duplicates) {
+      document.querySelectorAll('.mosque-item').forEach(item => {
+        item.classList.remove('duplicate');
+      });
+
+      duplicates.forEach(dup => {
+        const items = document.querySelectorAll('.mosque-item');
+        items.forEach(item => {
+          if (item.textContent.includes(dup.name)) {
+            item.classList.add('duplicate');
+            item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        });
+      });
+    }
+
+    async function addToDatabase() {
+      if (!extractedData) {
+        showError('Please extract coordinates first');
+        return;
+      }
+
+      const editedName = document.getElementById('editName').value.trim();
+      if (!editedName) {
+        showError('Please enter a mosque name');
+        return;
+      }
+
+      const selectedDistrict = document.getElementById('districtSelect').value;
+      if (!selectedDistrict) {
+        showError('Please select a district');
+        return;
+      }
+
+      const duplicates = await checkForDuplicates(extractedData.lat, extractedData.lng, editedName);
+      if (duplicates.length > 0) {
+        const confirmed = confirm(`Found ${duplicates.length} potential duplicate(s). Are you sure you want to add this location?`);
+        if (!confirmed) return;
+      }
+
+      document.getElementById('addBtn').disabled = true;
+      document.getElementById('addBtn').textContent = 'Adding...';
+
+      try {
+        await window.addDoc(window.collection(window.db, 'mosques'), {
+          name: editedName,
+          lat: extractedData.lat,
+          lng: extractedData.lng,
+          district: selectedDistrict,
+          createdAt: new Date().toISOString()
+        });
+
+        showSuccess('Mosque added successfully!');
+        document.getElementById('mapsLink').value = '';
+        document.getElementById('extractedInfo').style.display = 'none';
+        document.getElementById('warningMsg').style.display = 'none';
+        extractedData = null;
+        currentDuplicates = [];
+
+        loadMosques();
+
+      } catch (error) {
+        showError('Error adding mosque: ' + error.message);
+      }
+
+      document.getElementById('addBtn').disabled = false;
+      document.getElementById('addBtn').textContent = 'Add to Database';
+    }
+
+    // async function previewMigration() {
+    //   console.clear();
+    //   console.log('%c=== MIGRATION PREVIEW (NO CHANGES WILL BE MADE) ===', 'color: #3b82f6; font-size: 16px; font-weight: bold;');
+    //   console.log('');
+
+    //   const loadingMsg = document.createElement('div');
+    //   loadingMsg.className = 'loading';
+    //   loadingMsg.style.display = 'block';
+    //   loadingMsg.textContent = 'Analyzing data... (Check browser console)';
+    //   document.getElementById('mosqueList').prepend(loadingMsg);
+
+    //   try {
+    //     const querySnapshot = await window.getDocs(window.collection(window.db, 'mosques'));
+    //     let willUpdate = 0;
+    //     let alreadyMigrated = 0;
+    //     let noChange = 0;
+
+    //     const changes = [];
+
+    //     querySnapshot.forEach((docSnap) => {
+    //       const data = docSnap.data();
+    //       const currentDivision = data.division;
+    //       const currentDistrict = data.district;
+
+    //       if (currentDivision && !currentDistrict) {
+    //         // This record will be updated
+    //         let newDistrict = currentDivision;
+
+    //         // If division is one of the 8 major divisions, try to detect actual district
+    //         if (['Dhaka', 'Chattogram', 'Rajshahi', 'Khulna', 'Barishal', 'Sylhet', 'Rangpur', 'Mymensingh'].includes(currentDivision)) {
+    //           const detected = autoDetectDistrict(data.name, data.lat, data.lng);
+    //           newDistrict = detected || currentDivision;
+    //         }
+
+    //         changes.push({
+    //           id: docSnap.id,
+    //           name: data.name,
+    //           oldValue: currentDivision,
+    //           newValue: newDistrict,
+    //           action: 'UPDATE',
+    //           changed: currentDivision !== newDistrict
+    //         });
+
+    //         willUpdate++;
+    //       } else if (currentDistrict && !currentDivision) {
+    //         // Already migrated
+    //         changes.push({
+    //           id: docSnap.id,
+    //           name: data.name,
+    //           district: currentDistrict,
+    //           action: 'SKIP',
+    //           reason: 'Already has district field'
+    //         });
+    //         alreadyMigrated++;
+    //       } else if (currentDistrict && currentDivision) {
+    //         // Has both fields
+    //         changes.push({
+    //           id: docSnap.id,
+    //           name: data.name,
+    //           oldValue: currentDivision,
+    //           currentDistrict: currentDistrict,
+    //           action: 'CLEANUP',
+    //           reason: 'Has both fields, will remove division'
+    //         });
+    //         willUpdate++;
+    //       } else {
+    //         // No division or district
+    //         changes.push({
+    //           id: docSnap.id,
+    //           name: data.name,
+    //           action: 'ERROR',
+    //           reason: 'No division or district field'
+    //         });
+    //         noChange++;
+    //       }
+    //     });
+
+    //     loadingMsg.remove();
+
+    //     // Console output
+    //     console.log('%c📊 SUMMARY:', 'color: #10b981; font-size: 14px; font-weight: bold;');
+    //     console.log(`Total records: ${querySnapshot.size}`);
+    //     console.log(`Will be updated: ${willUpdate}`);
+    //     console.log(`Already migrated: ${alreadyMigrated}`);
+    //     console.log(`No changes needed: ${noChange}`);
+    //     console.log('');
+
+    //     // Show records that will be updated
+    //     console.log('%c🔄 RECORDS THAT WILL BE UPDATED:', 'color: #f59e0b; font-size: 14px; font-weight: bold;');
+    //     changes.filter(c => c.action === 'UPDATE' || c.action === 'CLEANUP').forEach((change, index) => {
+    //       console.group(`${index + 1}. ${change.name}`);
+    //       console.log(`ID: ${change.id}`);
+    //       if (change.action === 'UPDATE') {
+    //         console.log(`Division (old): %c${change.oldValue}`, 'color: #ef4444;');
+    //         console.log(`District (new): %c${change.newValue}`, 'color: #10b981;');
+    //         if (change.changed) {
+    //           console.log('%c⚠️ District detected from name/location', 'color: #f59e0b;');
+    //         }
+    //       } else if (change.action === 'CLEANUP') {
+    //         console.log(`Division (will remove): %c${change.oldValue}`, 'color: #ef4444;');
+    //         console.log(`District (keeping): %c${change.currentDistrict}`, 'color: #10b981;');
+    //       }
+    //       console.groupEnd();
+    //     });
+    //     console.log('');
+
+    //     // Show already migrated
+    //     if (alreadyMigrated > 0) {
+    //       console.log('%c✅ ALREADY MIGRATED (will skip):', 'color: #10b981; font-size: 14px; font-weight: bold;');
+    //       changes.filter(c => c.action === 'SKIP').forEach((change, index) => {
+    //         console.log(`${index + 1}. ${change.name} - District: ${change.district}`);
+    //       });
+    //       console.log('');
+    //     }
+
+    //     // Show errors
+    //     if (noChange > 0) {
+    //       console.log('%c❌ RECORDS WITH ISSUES:', 'color: #ef4444; font-size: 14px; font-weight: bold;');
+    //       changes.filter(c => c.action === 'ERROR').forEach((change, index) => {
+    //         console.log(`${index + 1}. ${change.name} - ${change.reason}`);
+    //       });
+    //       console.log('');
+    //     }
+
+    //     console.log('%c=== END OF PREVIEW ===', 'color: #3b82f6; font-size: 16px; font-weight: bold;');
+    //     console.log('');
+    //     console.log('%cℹ️  No changes were made to the database. Review the changes above.', 'color: #6b7280; font-style: italic;');
+    //     console.log('%cℹ️  If everything looks good, click "Migrate Division → District" button.', 'color: #6b7280; font-style: italic;');
+
+    //     showSuccess(`Preview complete! ${willUpdate} records will be updated, ${alreadyMigrated} already migrated. Check browser console (F12) for details.`);
+
+    //   } catch (error) {
+    //     loadingMsg.remove();
+    //     showError('Error previewing migration: ' + error.message);
+    //     console.error('Preview error:', error);
+    //   }
+    // }
+
+    // async function migrateToDistricts() {
+    //   if (!confirm('This will migrate all "division" fields to "district" fields. This is a ONE-TIME operation. Continue?')) {
+    //     return;
+    //   }
+
+    //   const loadingMsg = document.createElement('div');
+    //   loadingMsg.className = 'loading';
+    //   loadingMsg.style.display = 'block';
+    //   loadingMsg.textContent = 'Migrating division → district...';
+    //   document.getElementById('mosqueList').prepend(loadingMsg);
+
+    //   try {
+    //     const querySnapshot = await window.getDocs(window.collection(window.db, 'mosques'));
+    //     let updated = 0;
+    //     let skipped = 0;
+
+    //     for (const docSnap of querySnapshot.docs) {
+    //       const data = docSnap.data();
+
+    //       if (data.division && !data.district) {
+    //         let districtValue = data.division;
+
+    //         if (data.division === 'Dhaka' || data.division === 'Chattogram' ||
+    //             data.division === 'Rajshahi' || data.division === 'Khulna' ||
+    //             data.division === 'Barishal' || data.division === 'Sylhet' ||
+    //             data.division === 'Rangpur' || data.division === 'Mymensingh') {
+    //           districtValue = autoDetectDistrict(data.name, data.lat, data.lng) || data.division;
+    //         }
+
+    //         await window.updateDoc(window.doc(window.db, 'mosques', docSnap.id), {
+    //           district: districtValue,
+    //           division: window.deleteField()
+    //         });
+    //         updated++;
+    //       } else if (data.district) {
+    //         skipped++;
+    //       }
+    //     }
+
+    //     loadingMsg.remove();
+    //     showSuccess(`Migration complete! Updated: ${updated}, Already migrated: ${skipped}`);
+    //     loadMosques();
+    //   } catch (error) {
+    //     loadingMsg.remove();
+    //     showError('Error migrating data: ' + error.message);
+    //   }
+    // }
+
+    async function loadMosques() {
+      try {
+        const querySnapshot = await window.getDocs(window.collection(window.db, 'mosques'));
+        allMosques = [];
+
+        querySnapshot.forEach((docSnap) => {
+          allMosques.push({
+            id: docSnap.id,
+            ...docSnap.data()
+          });
+        });
+
+        if (currentDuplicates.length > 0) {
+          const updatedDuplicates = allMosques.filter(mosque =>
+            currentDuplicates.some(dup => dup.id === mosque.id)
+          );
+          if (updatedDuplicates.length > 0) {
+            displayMosques(updatedDuplicates);
+            setTimeout(() => highlightDuplicates(updatedDuplicates), 100);
+          } else {
+            displayMosques(allMosques);
+          }
+        } else {
+          displayMosques(allMosques);
+        }
+
+      } catch (error) {
+        showError('Error loading mosques: ' + error.message);
+      }
+    }
+
+    function displayMosques(mosques) {
+      const mosqueList = document.getElementById('mosqueList');
+      mosqueList.innerHTML = '';
+
+      if (currentDuplicates.length > 0) {
+        document.getElementById('totalCount').textContent = `${mosques.length} potential duplicate(s) - ${allMosques.length} total`;
+      } else {
+        document.getElementById('totalCount').textContent = mosques.length;
+      }
+
+      if (mosques.length === 0) {
+        mosqueList.innerHTML = '<div class="no-results">No mosques found</div>';
+        return;
+      }
+
+      mosques.forEach((mosque) => {
+        const div = document.createElement('div');
+        div.className = 'mosque-item';
+        div.innerHTML = `
+          <div>
+            <strong>${mosque.name}</strong><br>
+            <small>District: ${mosque.district || mosque.division || 'Not set'} | Lat: ${mosque.lat}, Lng: ${mosque.lng}</small>
+          </div>
+          <button class="delete-btn" onclick="deleteMosque('${mosque.id}', '${mosque.name.replace(/'/g, "\\'")}')">
+            Delete
+          </button>
+        `;
+        mosqueList.appendChild(div);
+      });
+    }
+
+    function searchMosques() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+      const searchClear = document.getElementById('searchClear');
+
+      if (searchTerm.length > 0) {
+        searchClear.classList.add('active');
+      } else {
+        searchClear.classList.remove('active');
+      }
+
+      if (searchTerm === '') {
+        if (currentDuplicates.length > 0) {
+          displayMosques(currentDuplicates);
+        } else {
+          displayMosques(allMosques);
+        }
+        return;
+      }
+
+      const searchBase = currentDuplicates.length > 0 ? currentDuplicates : allMosques;
+      const filtered = searchBase.filter(mosque => {
+        return mosque.name.toLowerCase().includes(searchTerm);
+      });
+
+      displayMosques(filtered);
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('searchClear').classList.remove('active');
+
+      if (currentDuplicates.length > 0) {
+        displayMosques(currentDuplicates);
+      } else {
+        displayMosques(allMosques);
+      }
+    }
+
+    async function deleteMosque(id, name) {
+      if (!confirm(`Are you sure you want to delete "${name}"?`)) {
+        return;
+      }
+
+      try {
+        await window.deleteDoc(window.doc(window.db, 'mosques', id));
+        showSuccess('Mosque deleted successfully');
+
+        currentDuplicates = [];
+        document.getElementById('warningMsg').style.display = 'none';
+
+        loadMosques();
+      } catch (error) {
+        showError('Error deleting mosque: ' + error.message);
+      }
+    }
+
+    function showSuccess(message) {
+      const el = document.getElementById('successMsg');
+      el.textContent = message;
+      el.style.display = 'block';
+      setTimeout(() => el.style.display = 'none', 3000);
+    }
+
+    function showError(message) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = message;
+      el.style.display = 'block';
+      setTimeout(() => el.style.display = 'none', 5000);
+    }
+
+    function showWarning(message) {
+      const el = document.getElementById('warningMsg');
+      el.innerHTML = message;
+      el.style.display = 'block';
+    }
+  </script>
+
+</body>
+
+</html>
