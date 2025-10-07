@@ -41,7 +41,94 @@
 </head>
 
 <body>
-  
+  <!-- DESKTOP VIEW -->
+  <div class="desktop-view">
+    <!-- Dark Mode Toggle Button -->
+    <button id="darkModeToggle" class="dark-mode-toggle" aria-label="Toggle Dark Mode">
+      🌙
+    </button>
+
+    <!-- Admin Login Button -->
+    <a href="admin.html" class="admin-login-btn" aria-label="Admin Login">
+      🔐
+    </a>
+
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+      <!-- Header -->
+      <div class="glass-card rounded-3xl shadow-2xl p-8 mb-8 transform hover:scale-105 transition-all duration-300">
+        <div class="text-center">
+          <h1 class="text-5xl md:text-6xl font-extrabold gradient-text mb-3">
+            HerPrayerPlace
+          </h1>
+          <p class="text-gray-600 text-lg md:text-xl font-medium">
+            ✨ Discover nearby places with female prayer facilities ✨
+          </p>
+        </div>
+      </div>
+
+      <!-- Find Nearby Button -->
+      <div class="glass-card rounded-3xl shadow-2xl p-6 mb-8">
+        <button id="findNearbyBtn"
+          class="w-full gradient-btn pulse-btn text-white font-bold py-4 px-8 rounded-full text-xl shadow-2xl transition duration-300">
+          📍 Find Nearby Places
+        </button>
+        <p id="statusMsg" class="text-sm font-medium mt-3 text-center"></p>
+      </div>
+
+      <!-- Map with Slider -->
+      <div class="glass-card rounded-3xl shadow-2xl p-6 mb-8">
+        <div id="map"></div>
+        <!-- Distance Slider Inside Map Section -->
+        <div class="distance-slider-compact">
+          <span class="distance-label-text">Search Radius:</span>
+          <input type="range" id="distanceSlider" min="0.5" max="5" step="0.5" value="1" class="distance-slider" />
+          <span class="distance-value-compact"><span id="distanceValue">1</span> km</span>
+        </div>
+      </div>
+
+      <!-- Search by Location -->
+      <div class="glass-card rounded-3xl shadow-2xl p-8 mb-8 search-section">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">
+          🔍 Find by Location
+        </h2>
+        <div class="flex flex-col gap-3">
+          <div class="suggestions-container">
+            <div class="search-input-wrapper">
+              <input type="text" id="searchInput" placeholder="Enter location name..." autocomplete="off"
+                class="w-full px-6 py-4 pr-14 border-2 border-purple-300 rounded-full focus:outline-none focus:ring-4 focus:ring-purple-400 text-lg font-medium shadow-lg" />
+              <button id="clearBtn" class="clear-btn" aria-label="Clear search">✕</button>
+            </div>
+            <div id="suggestionsList" class="suggestions-list"></div>
+          </div>
+          <button id="searchBtn"
+            class="search-btn text-white font-bold px-8 py-4 rounded-full text-lg shadow-lg w-full sm:w-auto">
+            Search Now
+          </button>
+          <button id="viewAllMosquesBtn"
+            class="gradient-btn text-white font-bold px-8 py-4 rounded-full text-lg shadow-lg w-full sm:w-auto">
+            View all the places
+          </button>
+        </div>
+      </div>
+
+      <!-- Suggest New Places Banner -->
+      <div class="glass-card rounded-3xl shadow-2xl p-6 mb-8 suggest-banner">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+          <div class="flex items-center gap-4">
+            <div class="suggest-icon">✨</div>
+            <div>
+              <h3 class="text-xl font-bold text-gray-800 mb-1">Know a Place We're Missing?</h3>
+              <p class="text-sm text-gray-600">Help other sisters by suggesting new locations!</p>
+            </div>
+          </div>
+          <a href="https://forms.gle/jp5V7YSX4GH7Gwpt6" class="suggest-banner-btn">
+            Suggest Now
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <!-- MOBILE VIEW -->
   <div class="mobile-view" style="display: none;">
