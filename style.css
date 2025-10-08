@@ -15,6 +15,10 @@ body {
 
 /* Make admin link in sidebar look like other items */
 @media (max-width: 768px) {
+
+}
+
+@media (max-width: 768px) {
   .sidebar-item {
     text-decoration: none;
     display: flex;
@@ -116,9 +120,7 @@ body {
     border-color: #4a5568;
     color: #e2e8f0;
   }
-}
 
-@media (max-width: 768px) {
   body {
     background: #f5f7fa;
     overflow: hidden;
@@ -257,7 +259,7 @@ body {
     position: fixed;
     top: 0;
     left: -100%;
-    width: 280px;
+    width: 240px;
     height: 100%;
     background: white;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
@@ -290,31 +292,40 @@ body {
   }
 
   .sidebar-header {
-    padding: 20px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
   }
 
+  .sidebar-img{
+    width: 50px;
+    height: 50px;
+
+  }
   .sidebar-title {
     font-size: 24px;
     font-weight: 800;
-    margin-bottom: 5px;
+
   }
 
-  .sidebar-subtitle {
+  /* .sidebar-subtitle {
     font-size: 13px;
     opacity: 0.9;
-  }
+  } */
 
   .sidebar-menu {
     padding: 10px 0;
   }
 
   .sidebar-item {
-    padding: 15px 20px;
+    padding: 10px 20px;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
     cursor: pointer;
     transition: all 0.3s;
     border-left: 3px solid transparent;
@@ -336,11 +347,11 @@ body {
   }
 
   .sidebar-item-icon {
-    font-size: 24px;
+    font-size: 20px;
   }
 
   .sidebar-item-text {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
   }
 
@@ -453,7 +464,7 @@ body {
   }
 
   .search-panel-title {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     color: #2d3748;
     margin-bottom: 15px;
@@ -486,7 +497,7 @@ body {
     color: white;
     border: none;
     border-radius: 12px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     margin-bottom: 10px;
@@ -499,7 +510,7 @@ body {
     color: white;
     border: none;
     border-radius: 12px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
   }
@@ -517,7 +528,7 @@ body {
   }
 
   .distance-label-mobile {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: #667eea;
     margin-bottom: 10px;
@@ -601,17 +612,23 @@ body {
   }
 
   .mosque-modal-title {
-    font-size: 25px;
+    font-size: 20px;
     font-weight: 800;
     margin-bottom: 8px;
 
   }
-
+  .district-filter-label{
+    font-size: 15px;
+    font-weight: 600;
+  }
+  body.dark-mode .district-filter-label{
+    color: white;
+  }
   .mosque-count {
     background: rgba(255, 255, 255, 0.2);
-    padding: 6px 20px;
+    padding: 6px 16px;
     border-radius: 25px;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
     margin-top: 8px;
   }
@@ -619,14 +636,14 @@ body {
   .mosque-modal-close {
     background: rgba(255, 255, 255, 0.2);
     border: 2px solid white;
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 24px;
+    font-size: 18px;
     color: white;
     transition: all 0.3s;
   }
@@ -634,7 +651,7 @@ body {
   .mosque-modal-body {
     flex: 1;
     overflow-y: auto;
-    padding: 25px;
+    padding: 15px;
   }
 
   /* Mobile Search Suggestions */
@@ -650,7 +667,7 @@ body {
     padding: 14px 45px 14px 20px !important;
     border: 2px solid #e2e8f0;
     border-radius: 12px;
-    font-size: 15px;
+    font-size: 13px;
     margin-bottom: 0 !important;
     background: #f7fafc;
   }
@@ -695,7 +712,7 @@ body {
     right: 0;
     background: white;
     border-radius: 12px;
-    max-height: 120px; /* Shows exactly 2 items */
+    max-height: 150px;
     overflow-y: auto;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     border: 2px solid #667eea;
@@ -713,7 +730,7 @@ body {
     border-bottom: 1px solid #e2e8f0;
     cursor: pointer;
     transition: all 0.2s;
-    font-size: 14px;
+    font-size: 12px;
     color: #2d3748;
     display: flex;
     align-items: flex-start;
@@ -1120,7 +1137,7 @@ body.dark-mode .mosque-modal-content {
 
 .mosque-modal-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 25px 30px;
+  padding: 20px 25px;
   color: white;
   display: flex;
   align-items: center;
@@ -1130,17 +1147,17 @@ body.dark-mode .mosque-modal-content {
 
 
 .district-filter-container {
-  padding: 15px 30px;
+  padding: 15px 20px;
   background: rgba(102, 126, 234, 0.05);
   border-bottom: 1px solid rgba(102, 126, 234, 0.1);
 }
 
 .district-filter-select {
   width: 100%;
-  padding: 10px 15px;
+  padding: 8px 16px;
   border: 2px solid #667eea;
-  border-radius: 15px;
-  font-size: 15px;
+  border-radius: 12px;
+  font-size: 13px;
   background: white;
   cursor: pointer;
   margin-top: 5px;
@@ -1161,19 +1178,19 @@ body.dark-mode .mosque-modal-content {
 .mosque-list-number {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  width: 45px;
-  height: 45px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 18px;
+  font-size: 12px;
 }
 
 .mosque-list-name {
   flex: 1;
-  font-size: 17px;
+  font-size: 14px;
   font-weight: 600;
   color: #2d3748;
 }

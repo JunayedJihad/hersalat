@@ -923,7 +923,7 @@ if (searchInputMobile && suggestionsListMobile) {
 
     debounceTimerMobile = setTimeout(() => {
       fetchSuggestionsMobile(query);
-    }, 250);
+    }, 300);
   });
 }
 
