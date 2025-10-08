@@ -1234,8 +1234,8 @@ body.dark-mode .mosque-list-name {
   background: white;
   width: 100%;
   max-width: 500px;
-  border-radius: 30px;
-  padding: 40px;
+  border-radius: 25px;
+  padding: 32px;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
   position: relative;
   text-align: center;
@@ -1252,29 +1252,29 @@ body.dark-mode .suggestion-popup-content {
   right: 15px;
   background: rgba(0, 0, 0, 0.1);
   border: none;
-  width: 35px;
-  height: 35px;
+  width: 33px;
+  height: 33px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 17px;
   color: #666;
 }
 
 .suggestion-popup-icon {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   margin: 0 auto 20px;
   background: linear-gradient(135deg, #34d399 0%, #3b82f6 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 40px;
+  font-size: 35px;
   box-shadow: 0 10px 30px rgba(52, 211, 153, 0.4);
 }
 
 .suggestion-popup-title {
-  font-size: 28px;
+  font-size: 25px;
   font-weight: 800;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
@@ -1284,9 +1284,9 @@ body.dark-mode .suggestion-popup-content {
 }
 
 .suggestion-popup-text {
-  font-size: 16px;
+  font-size: 15px;
   color: #4a5568;
-  line-height: 1.6;
+  line-height: 1.5;
   margin-bottom: 30px;
 }
 
@@ -1304,12 +1304,12 @@ body.dark-mode .suggestion-popup-text {
   background: linear-gradient(135deg, #34d399 0%, #3b82f6 100%);
   color: white;
   font-weight: 700;
-  padding: 16px 32px;
+  padding: 14px 32px;
   border-radius: 30px;
   text-decoration: none;
   transition: all 0.3s;
   box-shadow: 0 6px 20px rgba(52, 211, 153, 0.3);
-  font-size: 18px;
+  font-size: 16px;
   border: none;
   cursor: pointer;
 }
