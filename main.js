@@ -789,11 +789,11 @@ const fabLocate = document.getElementById('fabLocate');
 const fabSearch = document.getElementById('fabSearch');
 const bottomSearchPanel = document.getElementById('bottomSearchPanel');
 
-if (fabLocate) {
-  fabLocate.addEventListener('click', () => {
-    findNearbyPlaces();
-  });
-}
+// if (fabLocate) {
+//   fabLocate.addEventListener('click', () => {
+//     findNearbyPlaces();
+//   });
+// }
 
 if (fabSearch) {
   fabSearch.addEventListener('click', () => {
@@ -867,4 +867,345 @@ if (darkModeToggleMobile) {
 
     document.cookie = `darkMode=${isDark}; max-age=${365*24*60*60}; path=/`;
   });
+}
+
+
+
+// ==================== FIX 1: Mobile Search Suggestions (UPDATED) ====================
+
+// Create clear button for mobile search
+let clearBtnMobile = document.getElementById('clearBtnMobile');
+if (!clearBtnMobile && searchInputMobile) {
+  // Wrap input in a container
+  const wrapper = document.createElement('div');
+  wrapper.className = 'mobile-search-input-wrapper';
+  wrapper.style.position = 'relative';
+  searchInputMobile.parentNode.insertBefore(wrapper, searchInputMobile);
+  wrapper.appendChild(searchInputMobile);
+
+  // Create clear button
+  clearBtnMobile = document.createElement('button');
+  clearBtnMobile.id = 'clearBtnMobile';
+  clearBtnMobile.className = 'clear-btn-mobile';
+  clearBtnMobile.innerHTML = '✕';
+  clearBtnMobile.setAttribute('aria-label', 'Clear search');
+  wrapper.appendChild(clearBtnMobile);
+
+  // Create suggestions list INSIDE the wrapper
+  const suggestionsListMobile = document.createElement('div');
+  suggestionsListMobile.id = 'suggestionsListMobile';
+  suggestionsListMobile.className = 'suggestions-list-mobile';
+  suggestionsListMobile.style.display = 'none';
+  wrapper.appendChild(suggestionsListMobile);
+}
+
+// Get the suggestions list
+let suggestionsListMobile = document.getElementById('suggestionsListMobile');
+
+if (searchInputMobile && suggestionsListMobile) {
+  let debounceTimerMobile;
+
+  searchInputMobile.addEventListener('input', function() {
+    const query = this.value.trim();
+
+    // Show/hide clear button
+    if (clearBtnMobile) {
+      clearBtnMobile.style.display = query.length > 0 ? 'flex' : 'none';
+    }
+
+    clearTimeout(debounceTimerMobile);
+
+    if (query.length < 2) {
+      suggestionsListMobile.style.display = 'none';
+      suggestionsListMobile.innerHTML = '';
+      return;
+    }
+
+    debounceTimerMobile = setTimeout(() => {
+      fetchSuggestionsMobile(query);
+    }, 250);
+  });
+}
+
+// Clear button functionality
+if (clearBtnMobile) {
+  clearBtnMobile.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (searchInputMobile) {
+      searchInputMobile.value = '';
+      searchInputMobile.focus();
+    }
+    clearBtnMobile.style.display = 'none';
+    if (suggestionsListMobile) {
+      suggestionsListMobile.style.display = 'none';
+      suggestionsListMobile.innerHTML = '';
+    }
+  });
+}
+
+function fetchSuggestionsMobile(query) {
+  const bangladeshBounds = '88.0,20.5,92.7,26.6';
+
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=8&addressdetails=1&countrycodes=bd&viewbox=${bangladeshBounds}&bounded=0`)
+    .then(response => response.json())
+    .then(data => {
+      displaySuggestionsMobile(data);
+    })
+    .catch(error => {
+      console.error('Mobile suggestion fetch error:', error);
+    });
+}
+
+function displaySuggestionsMobile(suggestions) {
+  const suggestionsListMobile = document.getElementById('suggestionsListMobile');
+  if (!suggestionsListMobile) return;
+
+  suggestionsListMobile.innerHTML = '';
+
+  if (suggestions.length === 0) {
+    suggestionsListMobile.style.display = 'none';
+    return;
+  }
+
+  suggestions.forEach(suggestion => {
+    const item = document.createElement('div');
+    item.className = 'suggestion-item-mobile';
+
+    const icon = getLocationIcon(suggestion.type);
+    item.innerHTML = `<span style="margin-right: 8px;">${icon}</span>${suggestion.display_name}`;
+
+    item.addEventListener('click', () => {
+      const searchInputMobile = document.getElementById('searchInputMobile');
+      if (searchInputMobile) searchInputMobile.value = suggestion.display_name;
+      suggestionsListMobile.style.display = 'none';
+      suggestionsListMobile.innerHTML = '';
+
+      // Hide clear button since we're performing search
+      const clearBtnMobile = document.getElementById('clearBtnMobile');
+      if (clearBtnMobile) clearBtnMobile.style.display = 'none';
+
+      performSearch(parseFloat(suggestion.lat), parseFloat(suggestion.lon), suggestion.display_name);
+
+      // Close the bottom panel after selection
+      const bottomSearchPanel = document.getElementById('bottomSearchPanel');
+      if (bottomSearchPanel) bottomSearchPanel.classList.remove('active');
+    });
+
+    suggestionsListMobile.appendChild(item);
+  });
+
+  suggestionsListMobile.style.display = 'block';
+}
+
+// Close mobile suggestions when clicking outside
+document.addEventListener('click', function(e) {
+  const suggestionsListMobile = document.getElementById('suggestionsListMobile');
+  const searchInputMobile = document.getElementById('searchInputMobile');
+  const clearBtnMobile = document.getElementById('clearBtnMobile');
+  const mobileSearchWrapper = document.querySelector('.mobile-search-input-wrapper');
+  const bottomSearchPanel = document.getElementById('bottomSearchPanel');
+
+  if (mobileSearchWrapper && !mobileSearchWrapper.contains(e.target)) {
+    // Clicked outside the entire search wrapper
+    if (suggestionsListMobile) {
+      suggestionsListMobile.style.display = 'none';
+    }
+
+    // Clear the search input when clicking outside
+    if (searchInputMobile) {
+      searchInputMobile.value = '';
+    }
+    if (clearBtnMobile) {
+      clearBtnMobile.style.display = 'none';
+    }
+  }
+});
+
+// Also clear when bottom panel closes
+if (bottomSearchPanel) {
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.attributeName === 'class') {
+        if (!bottomSearchPanel.classList.contains('active')) {
+          // Panel closed, clear search
+          if (searchInputMobile) searchInputMobile.value = '';
+          if (clearBtnMobile) clearBtnMobile.style.display = 'none';
+          if (suggestionsListMobile) {
+            suggestionsListMobile.style.display = 'none';
+            suggestionsListMobile.innerHTML = '';
+          }
+        }
+      }
+    });
+  });
+
+  observer.observe(bottomSearchPanel, { attributes: true });
+}
+
+// ==================== FIX 2: Location Access Feedback (Keep as is) ====================
+
+if (fabLocate) {
+  fabLocate.addEventListener('click', () => {
+    // Show loading state on FAB button
+    const originalContent = fabLocate.innerHTML;
+    fabLocate.innerHTML = '⏳';
+    fabLocate.disabled = true;
+    fabLocate.style.opacity = '0.7';
+
+    if (!map) {
+      fabLocate.innerHTML = originalContent;
+      fabLocate.disabled = false;
+      fabLocate.style.opacity = '1';
+      alert('Map is still loading, please try again in a moment');
+      return;
+    }
+
+    if ("geolocation" in navigator) {
+      // Show toast notification
+      showToast('📍 Requesting location access...');
+
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+
+          if (userMarker) {
+            map.removeLayer(userMarker);
+          }
+          if (radiusCircle) {
+            map.removeLayer(radiusCircle);
+          }
+
+          radiusCircle = L.circle([userLocation.lat, userLocation.lng], {
+            color: "#667eea",
+            fillColor: "#a78bfa",
+            fillOpacity: 0.2,
+            radius: currentRadius * 1000,
+          }).addTo(map);
+
+          userMarker = L.marker([userLocation.lat, userLocation.lng], {
+            icon: bluePin,
+          }).addTo(map);
+          userMarker.bindPopup("<strong>Your Location</strong>").openPopup();
+
+          map.setView([userLocation.lat, userLocation.lng], 14);
+          displayMosques(userLocation.lat, userLocation.lng);
+
+          // Restore FAB button
+          fabLocate.innerHTML = originalContent;
+          fabLocate.disabled = false;
+          fabLocate.style.opacity = '1';
+
+          showToast('✅ Location found!');
+        },
+        function (error) {
+          // Restore FAB button
+          fabLocate.innerHTML = originalContent;
+          fabLocate.disabled = false;
+          fabLocate.style.opacity = '1';
+
+          let errorMsg = "";
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              errorMsg = "❌ Location access denied. Please enable location permissions in your browser settings.";
+              break;
+            case error.POSITION_UNAVAILABLE:
+              errorMsg = "❌ Location unavailable. Please check your device settings.";
+              break;
+            case error.TIMEOUT:
+              errorMsg = "❌ Location request timed out. Please try again.";
+              break;
+            default:
+              errorMsg = "❌ Unable to get your location. Please try again.";
+          }
+
+          showToast(errorMsg, 4000);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        }
+      );
+    } else {
+      // Restore FAB button
+      fabLocate.innerHTML = originalContent;
+      fabLocate.disabled = false;
+      fabLocate.style.opacity = '1';
+
+      showToast("❌ Location is not supported by your browser.", 3000);
+    }
+  });
+}
+
+// Toast notification function
+function showToast(message, duration = 2500) {
+  // Remove any existing toast
+  const existingToast = document.getElementById('locationToast');
+  if (existingToast) {
+    existingToast.remove();
+  }
+
+  const toast = document.createElement('div');
+  toast.id = 'locationToast';
+  toast.textContent = message;
+  toast.style.cssText = `
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(45, 55, 72, 0.95);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.3s ease;
+    max-width: 90%;
+    text-align: center;
+  `;
+
+  // Add animation keyframes if not already added
+  if (!document.getElementById('toastStyles')) {
+    const style = document.createElement('style');
+    style.id = 'toastStyles';
+    style.textContent = `
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateX(-50%) translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateX(-50%) translateY(-20px);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.animation = 'slideUp 0.3s ease';
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.remove();
+      }
+    }, 300);
+  }, duration);
 }
