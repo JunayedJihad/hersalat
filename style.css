@@ -12,6 +12,108 @@
     }
 
     /* ==================== MOBILE VIEW (Native App Style) ==================== */
+    /* Add this to your mobile view section in style.css */
+
+/* Make admin link in sidebar look like other items */
+@media (max-width: 768px) {
+  .sidebar-item {
+    text-decoration: none;
+    display: flex;
+  }
+
+  /* Make the bottom panel closable by clicking backdrop */
+  .bottom-search-panel::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .bottom-search-panel.active::before {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* Make handle more visible for swipe gesture */
+  .search-panel-handle {
+    width: 40px;
+    height: 4px;
+    background: #cbd5e0;
+    border-radius: 2px;
+    margin: 12px auto 8px;
+    cursor: grab;
+    touch-action: pan-y;
+  }
+
+  .search-panel-handle:active {
+    cursor: grabbing;
+  }
+
+  body.dark-mode .search-panel-handle {
+    background: #4a5568;
+  }
+
+  /* Dark mode fixes for mobile */
+  body.dark-mode .mobile-header {
+    background: #2d3748;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  body.dark-mode .hamburger-line {
+    background: #a78bfa;
+  }
+
+  body.dark-mode .mobile-logo {
+    background: linear-gradient(135deg, #a78bfa 0%, #f093fb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  body.dark-mode .dark-mode-toggle-mobile {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+  }
+
+  body.dark-mode .mobile-sidebar {
+    background: #2d3748;
+  }
+
+  body.dark-mode .sidebar-item {
+    color: #e2e8f0;
+  }
+
+  body.dark-mode .sidebar-item:hover {
+    background: rgba(167, 139, 250, 0.1);
+    border-left-color: #a78bfa;
+  }
+
+  body.dark-mode .fab {
+    background: #2d3748;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  body.dark-mode .bottom-search-panel {
+    background: #2d3748;
+  }
+
+  body.dark-mode .search-panel-title {
+    color: #e2e8f0;
+  }
+
+  body.dark-mode .mobile-search-input {
+    background: #1a202c;
+    border-color: #4a5568;
+    color: #e2e8f0;
+  }
+}
     @media (max-width: 768px) {
       body {
         background: #f5f7fa;
@@ -232,19 +334,25 @@
       }
 
       /* Map Container */
-      .mobile-map-container {
-        position: fixed;
-        top: 60px;
-        left: 0;
-        right: 0;
-        bottom: 0;
-      }
+.mobile-map-container {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
 
-      #map {
-        width: 100%;
-        height: 100%;
-        border-radius: 0;
-      }
+#mapMobile {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 
       /* Floating Action Buttons */
       .fab-container {

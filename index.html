@@ -34,103 +34,22 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
-
-
 </head>
 
 <body>
-  <!-- DESKTOP VIEW -->
-  <div class="desktop-view">
-    <!-- Dark Mode Toggle Button -->
-    <button id="darkModeToggle" class="dark-mode-toggle" aria-label="Toggle Dark Mode">
-      🌙
-    </button>
+  <!-- Dark Mode Toggle Button - Desktop -->
+  <button id="darkModeToggle" class="dark-mode-toggle float-animation" aria-label="Toggle Dark Mode">
+    🌙
+  </button>
 
-    <!-- Admin Login Button -->
-    <a href="admin.html" class="admin-login-btn" aria-label="Admin Login">
-      🔐
-    </a>
+  <!-- Admin Login Button - Desktop -->
+  <a href="admin.html" class="admin-login-btn" aria-label="Admin Login">
+    🔐
+  </a>
 
-    <div class="container mx-auto px-4 py-8 max-w-5xl">
-      <!-- Header -->
-      <div class="glass-card rounded-3xl shadow-2xl p-8 mb-8 transform hover:scale-105 transition-all duration-300">
-        <div class="text-center">
-          <h1 class="text-5xl md:text-6xl font-extrabold gradient-text mb-3">
-            HerPrayerPlace
-          </h1>
-          <p class="text-gray-600 text-lg md:text-xl font-medium">
-            ✨ Discover nearby places with female prayer facilities ✨
-          </p>
-        </div>
-      </div>
-
-      <!-- Find Nearby Button -->
-      <div class="glass-card rounded-3xl shadow-2xl p-6 mb-8">
-        <button id="findNearbyBtn"
-          class="w-full gradient-btn pulse-btn text-white font-bold py-4 px-8 rounded-full text-xl shadow-2xl transition duration-300">
-          📍 Find Nearby Places
-        </button>
-        <p id="statusMsg" class="text-sm font-medium mt-3 text-center"></p>
-      </div>
-
-      <!-- Map with Slider -->
-      <div class="glass-card rounded-3xl shadow-2xl p-6 mb-8">
-        <div id="map"></div>
-        <!-- Distance Slider Inside Map Section -->
-        <div class="distance-slider-compact">
-          <span class="distance-label-text">Search Radius:</span>
-          <input type="range" id="distanceSlider" min="0.5" max="5" step="0.5" value="1" class="distance-slider" />
-          <span class="distance-value-compact"><span id="distanceValue">1</span> km</span>
-        </div>
-      </div>
-
-      <!-- Search by Location -->
-      <div class="glass-card rounded-3xl shadow-2xl p-8 mb-8 search-section">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">
-          🔍 Find by Location
-        </h2>
-        <div class="flex flex-col gap-3">
-          <div class="suggestions-container">
-            <div class="search-input-wrapper">
-              <input type="text" id="searchInput" placeholder="Enter location name..." autocomplete="off"
-                class="w-full px-6 py-4 pr-14 border-2 border-purple-300 rounded-full focus:outline-none focus:ring-4 focus:ring-purple-400 text-lg font-medium shadow-lg" />
-              <button id="clearBtn" class="clear-btn" aria-label="Clear search">✕</button>
-            </div>
-            <div id="suggestionsList" class="suggestions-list"></div>
-          </div>
-          <button id="searchBtn"
-            class="search-btn text-white font-bold px-8 py-4 rounded-full text-lg shadow-lg w-full sm:w-auto">
-            Search Now
-          </button>
-          <button id="viewAllMosquesBtn"
-            class="gradient-btn text-white font-bold px-8 py-4 rounded-full text-lg shadow-lg w-full sm:w-auto">
-            View all the places
-          </button>
-        </div>
-      </div>
-
-      <!-- Suggest New Places Banner -->
-      <div class="glass-card rounded-3xl shadow-2xl p-6 mb-8 suggest-banner">
-        <div class="flex items-center justify-between flex-wrap gap-4">
-          <div class="flex items-center gap-4">
-            <div class="suggest-icon">✨</div>
-            <div>
-              <h3 class="text-xl font-bold text-gray-800 mb-1">Know a Place We're Missing?</h3>
-              <p class="text-sm text-gray-600">Help other sisters by suggesting new locations!</p>
-            </div>
-          </div>
-          <a href="https://forms.gle/jp5V7YSX4GH7Gwpt6" class="suggest-banner-btn">
-            Suggest Now
-          </a>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- MOBILE VIEW -->
+  <!-- ==================== MOBILE VIEW ==================== -->
   <div class="mobile-view" style="display: none;">
     <!-- Mobile Header -->
     <div class="mobile-header">
@@ -140,25 +59,17 @@
         <span class="hamburger-line"></span>
       </button>
       <div class="mobile-logo">HerPrayerPlace</div>
-      <button class="dark-mode-toggle-mobile" id="darkModeToggleMobile" aria-label="Toggle Dark Mode">
-        🌙
-      </button>
+      <button class="dark-mode-toggle-mobile" id="darkModeToggleMobile" aria-label="Toggle Dark Mode">🌙</button>
     </div>
 
-    <!-- Sidebar Overlay -->
+    <!-- Sidebar Menu -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- Mobile Sidebar -->
     <div class="mobile-sidebar" id="mobileSidebar">
       <div class="sidebar-header">
         <div class="sidebar-title">HerPrayerPlace</div>
-        <div class="sidebar-subtitle">Find female prayer facilities</div>
+        <div class="sidebar-subtitle">Find Female Prayer Facilities</div>
       </div>
       <div class="sidebar-menu">
-        <div class="sidebar-item" id="sidebarSearch">
-          <span class="sidebar-item-icon">🔍</span>
-          <span class="sidebar-item-text">Search Location</span>
-        </div>
         <div class="sidebar-item" id="sidebarViewAll">
           <span class="sidebar-item-icon">🕌</span>
           <span class="sidebar-item-text">View All Places</span>
@@ -167,46 +78,120 @@
           <span class="sidebar-item-icon">✨</span>
           <span class="sidebar-item-text">Suggest a Place</span>
         </div>
-        <div class="sidebar-item" id="sidebarAdmin">
+        <a href="admin.html" class="sidebar-item" id="sidebarAdmin">
           <span class="sidebar-item-icon">🔐</span>
           <span class="sidebar-item-text">Admin Login</span>
-        </div>
+        </a>
       </div>
     </div>
 
-    <!-- Mobile Map Container -->
+    <!-- Map Container -->
     <div class="mobile-map-container">
       <div id="mapMobile"></div>
     </div>
 
     <!-- Floating Action Buttons -->
     <div class="fab-container">
-      <button class="fab" id="fabSearch" title="Search">
+      <button class="fab" id="fabSearch" aria-label="Search">
         🔍
       </button>
-      <button class="fab fab-primary" id="fabLocate" title="Find Nearby">
-        📍
+      <button class="fab fab-primary" id="fabLocate" aria-label="Find Nearby">
+        🗺️
       </button>
     </div>
 
     <!-- Bottom Search Panel -->
     <div class="bottom-search-panel" id="bottomSearchPanel">
-      <div class="search-panel-handle"></div>
+      <div class="search-panel-handle" id="searchPanelHandle"></div>
       <div class="search-panel-content">
         <h3 class="search-panel-title">🔍 Search Location</h3>
-
-        <input type="text" id="searchInputMobile" class="mobile-search-input" placeholder="Enter location name..." />
-        <div id="suggestionsListMobile" class="suggestions-list-mobile" style="display: none;"></div>
+        <input type="text" id="searchInputMobile" placeholder="Enter location..." class="mobile-search-input" autocomplete="off" />
+        <button id="searchBtnMobile" class="mobile-search-btn">Search</button>
+        <button id="viewAllMosquesBtnMobile" class="mobile-view-all-btn">View All Places</button>
 
         <div class="distance-slider-mobile">
           <label class="distance-label-mobile">Search Radius: <span id="distanceValueMobile">1</span> km</label>
           <input type="range" id="distanceSliderMobile" min="0.5" max="5" step="0.5" value="1" class="distance-slider" />
         </div>
-
-        <button id="searchBtnMobile" class="mobile-search-btn">Search Now</button>
-        <button id="viewAllMosquesBtnMobile" class="mobile-view-all-btn">View All Places</button>
       </div>
     </div>
+  </div>
+
+  <!-- ==================== DESKTOP VIEW ==================== -->
+  <div class="container mx-auto px-4 py-8 max-w-5xl desktop-view">
+    <!-- Header -->
+    <div class="glass-card rounded-3xl shadow-2xl p-8 mb-8 transform hover:scale-105 transition-all duration-300">
+      <div class="text-center">
+        <h1 class="text-5xl md:text-6xl font-extrabold gradient-text mb-3">
+          HerPrayerPlace
+        </h1>
+        <p class="text-gray-600 text-lg md:text-xl font-medium">
+          ✨ Discover nearby places with female prayer facilities ✨
+        </p>
+      </div>
+    </div>
+
+    <!-- Find Nearby Button -->
+    <div class="glass-card rounded-3xl shadow-2xl p-6 mb-8">
+      <button id="findNearbyBtn"
+        class="w-full gradient-btn pulse-btn text-white font-bold py-4 px-8 rounded-full text-xl shadow-2xl transition duration-300">
+        📍 Find Nearby Places
+      </button>
+      <p id="statusMsg" class="text-sm font-medium mt-3 text-center"></p>
+    </div>
+
+    <!-- Map with Slider -->
+    <div class="glass-card rounded-3xl shadow-2xl p-6 mb-8">
+      <div id="map"></div>
+      <!-- Distance Slider Inside Map Section -->
+      <div class="distance-slider-compact">
+        <span class="distance-label-text">Search Radius:</span>
+        <input type="range" id="distanceSlider" min="0.5" max="5" step="0.5" value="1" class="distance-slider" />
+        <span class="distance-value-compact"><span id="distanceValue">1</span> km</span>
+      </div>
+    </div>
+
+    <!-- Search by Location -->
+    <div class="glass-card rounded-3xl shadow-2xl p-8 mb-8 search-section">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">
+        🔍 Find by Location
+      </h2>
+      <div class="flex flex-col gap-3">
+        <div class="suggestions-container">
+          <div class="search-input-wrapper">
+            <input type="text" id="searchInput" placeholder="Enter location name..." autocomplete="off"
+              class="w-full px-6 py-4 pr-14 border-2 border-purple-300 rounded-full focus:outline-none focus:ring-4 focus:ring-purple-400 text-lg font-medium shadow-lg" />
+            <button id="clearBtn" class="clear-btn" aria-label="Clear search">✕</button>
+          </div>
+          <div id="suggestionsList" class="suggestions-list"></div>
+        </div>
+        <button id="searchBtn"
+          class="search-btn text-white font-bold px-8 py-4 rounded-full text-lg shadow-lg w-full sm:w-auto">
+          Search Now
+        </button>
+        <button id="viewAllMosquesBtn"
+          class="gradient-btn text-white font-bold px-8 py-4 rounded-full text-lg shadow-lg w-full sm:w-auto">
+          View all the places
+        </button>
+      </div>
+    </div>
+
+    <!-- Suggest New Places Banner -->
+    <div class="glass-card rounded-3xl shadow-2xl p-6 mb-8 suggest-banner">
+      <div class="flex items-center justify-between flex-wrap gap-4">
+        <div class="flex items-center gap-4">
+          <div class="suggest-icon">✨</div>
+          <div>
+            <h3 class="text-xl font-bold text-gray-800 mb-1">Know a Place We're Missing?</h3>
+            <p class="text-sm text-gray-600">Help other sisters by suggesting new locations!</p>
+          </div>
+        </div>
+        <a href="https://forms.gle/jp5V7YSX4GH7Gwpt6" class="suggest-banner-btn">
+          Suggest Now
+        </a>
+      </div>
+    </div>
+
   </div>
 
   <!-- Mosque List Modal -->
@@ -224,17 +209,73 @@
 
       <!-- District Filter -->
       <div class="district-filter-container">
-        <label for="districtFilter" class="district-filter-label" style="display: block; font-weight: 600; color: #667eea; margin-bottom: 6px; font-size: 14px;">Filter by District:</label>
+        <label for="districtFilter" class="district-filter-label">Filter by District:</label>
         <select id="districtFilter" class="district-filter-select" onchange="filterByDistrict()">
           <option value="all">All Districts</option>
-          <option value="Dhaka">Dhaka</option>
-          <option value="Chattogram">Chattogram</option>
-          <option value="Sylhet">Sylhet</option>
-          <option value="Rajshahi">Rajshahi</option>
-          <option value="Khulna">Khulna</option>
+          <option value="Bagerhat">Bagerhat</option>
+          <option value="Bandarban">Bandarban</option>
+          <option value="Barguna">Barguna</option>
           <option value="Barishal">Barishal</option>
-          <option value="Rangpur">Rangpur</option>
+          <option value="Bhola">Bhola</option>
+          <option value="Bogura">Bogura</option>
+          <option value="Brahmanbaria">Brahmanbaria</option>
+          <option value="Chandpur">Chandpur</option>
+          <option value="Chapainawabganj">Chapainawabganj</option>
+          <option value="Chattogram">Chattogram</option>
+          <option value="Chuadanga">Chuadanga</option>
+          <option value="Cox's Bazar">Cox's Bazar</option>
+          <option value="Cumilla">Cumilla</option>
+          <option value="Dhaka">Dhaka</option>
+          <option value="Dinajpur">Dinajpur</option>
+          <option value="Faridpur">Faridpur</option>
+          <option value="Feni">Feni</option>
+          <option value="Gaibandha">Gaibandha</option>
+          <option value="Gazipur">Gazipur</option>
+          <option value="Gopalganj">Gopalganj</option>
+          <option value="Habiganj">Habiganj</option>
+          <option value="Jamalpur">Jamalpur</option>
+          <option value="Jashore">Jashore</option>
+          <option value="Jhalokathi">Jhalokathi</option>
+          <option value="Jhenaidah">Jhenaidah</option>
+          <option value="Joypurhat">Joypurhat</option>
+          <option value="Khagrachhari">Khagrachhari</option>
+          <option value="Khulna">Khulna</option>
+          <option value="Kishoreganj">Kishoreganj</option>
+          <option value="Kurigram">Kurigram</option>
+          <option value="Kushtia">Kushtia</option>
+          <option value="Lakshmipur">Lakshmipur</option>
+          <option value="Lalmonirhat">Lalmonirhat</option>
+          <option value="Madaripur">Madaripur</option>
+          <option value="Magura">Magura</option>
+          <option value="Manikganj">Manikganj</option>
+          <option value="Meherpur">Meherpur</option>
+          <option value="Moulvibazar">Moulvibazar</option>
+          <option value="Munshiganj">Munshiganj</option>
           <option value="Mymensingh">Mymensingh</option>
+          <option value="Naogaon">Naogaon</option>
+          <option value="Narail">Narail</option>
+          <option value="Narayanganj">Narayanganj</option>
+          <option value="Narsingdi">Narsingdi</option>
+          <option value="Natore">Natore</option>
+          <option value="Netrokona">Netrokona</option>
+          <option value="Nilphamari">Nilphamari</option>
+          <option value="Noakhali">Noakhali</option>
+          <option value="Pabna">Pabna</option>
+          <option value="Panchagarh">Panchagarh</option>
+          <option value="Patuakhali">Patuakhali</option>
+          <option value="Pirojpur">Pirojpur</option>
+          <option value="Rajbari">Rajbari</option>
+          <option value="Rajshahi">Rajshahi</option>
+          <option value="Rangamati">Rangamati</option>
+          <option value="Rangpur">Rangpur</option>
+          <option value="Satkhira">Satkhira</option>
+          <option value="Shariatpur">Shariatpur</option>
+          <option value="Sherpur">Sherpur</option>
+          <option value="Sirajganj">Sirajganj</option>
+          <option value="Sunamganj">Sunamganj</option>
+          <option value="Sylhet">Sylhet</option>
+          <option value="Tangail">Tangail</option>
+          <option value="Thakurgaon">Thakurgaon</option>
         </select>
       </div>
 
@@ -310,116 +351,6 @@
     }
 
     loadMosques();
-
-    // Mobile-specific JavaScript
-    const isMobile = window.innerWidth <= 768;
-
-    if (isMobile) {
-      // Hamburger menu functionality
-      const hamburgerBtn = document.getElementById('hamburgerBtn');
-      const mobileSidebar = document.getElementById('mobileSidebar');
-      const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-      function toggleSidebar() {
-        hamburgerBtn.classList.toggle('active');
-        mobileSidebar.classList.toggle('active');
-        sidebarOverlay.classList.toggle('active');
-      }
-
-      hamburgerBtn.addEventListener('click', toggleSidebar);
-      sidebarOverlay.addEventListener('click', toggleSidebar);
-
-      // Sidebar menu items
-      document.getElementById('sidebarSearch').addEventListener('click', () => {
-        toggleSidebar();
-        document.getElementById('bottomSearchPanel').classList.add('active');
-      });
-
-      document.getElementById('sidebarViewAll').addEventListener('click', () => {
-        toggleSidebar();
-        document.getElementById('viewAllMosquesBtnMobile').click();
-      });
-
-      document.getElementById('sidebarSuggest').addEventListener('click', () => {
-        window.open('https://forms.gle/jp5V7YSX4GH7Gwpt6', '_blank');
-      });
-
-      document.getElementById('sidebarAdmin').addEventListener('click', () => {
-        window.location.href = 'admin.html';
-      });
-
-      // FAB buttons
-      document.getElementById('fabSearch').addEventListener('click', () => {
-        const panel = document.getElementById('bottomSearchPanel');
-        panel.classList.toggle('active');
-      });
-
-      document.getElementById('fabLocate').addEventListener('click', () => {
-        if (window.findNearbyPlaces) {
-          window.findNearbyPlaces();
-        }
-      });
-
-      // Mobile dark mode toggle
-      document.getElementById('darkModeToggleMobile').addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        const icon = document.getElementById('darkModeToggleMobile');
-        icon.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-      });
-
-      // Distance slider mobile
-      const distanceSliderMobile = document.getElementById('distanceSliderMobile');
-      const distanceValueMobile = document.getElementById('distanceValueMobile');
-
-      distanceSliderMobile.addEventListener('input', (e) => {
-        distanceValueMobile.textContent = e.target.value;
-        if (window.updateSearchRadius) {
-          window.updateSearchRadius(parseFloat(e.target.value));
-        }
-      });
-
-      // Mobile search functionality
-      const searchInputMobile = document.getElementById('searchInputMobile');
-      const suggestionsListMobile = document.getElementById('suggestionsListMobile');
-
-      searchInputMobile.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        if (query.length > 0 && window.mosqueLocations) {
-          const filtered = window.mosqueLocations.filter(m =>
-            m.name.toLowerCase().includes(query)
-          ).slice(0, 5);
-
-          if (filtered.length > 0) {
-            suggestionsListMobile.innerHTML = filtered.map(m =>
-              `<div class="suggestion-item-mobile" data-name="${m.name}">${m.name}</div>`
-            ).join('');
-            suggestionsListMobile.style.display = 'block';
-          } else {
-            suggestionsListMobile.style.display = 'none';
-          }
-        } else {
-          suggestionsListMobile.style.display = 'none';
-        }
-      });
-
-      suggestionsListMobile.addEventListener('click', (e) => {
-        if (e.target.classList.contains('suggestion-item-mobile')) {
-          searchInputMobile.value = e.target.dataset.name;
-          suggestionsListMobile.style.display = 'none';
-        }
-      });
-
-      document.getElementById('searchBtnMobile').addEventListener('click', () => {
-        if (window.searchLocation) {
-          window.searchLocation(searchInputMobile.value);
-          document.getElementById('bottomSearchPanel').classList.remove('active');
-        }
-      });
-
-      document.getElementById('viewAllMosquesBtnMobile').addEventListener('click', () => {
-        document.getElementById('mosqueModal').classList.add('active');
-      });
-    }
   </script>
 
 </body>

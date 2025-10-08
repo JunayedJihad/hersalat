@@ -59,6 +59,8 @@ function initializeMap() {
     return;
   }
 
+  console.log('Creating map on element:', mapElement);
+
   map = L.map(mapElement).setView([23.8103, 90.4125], 12);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -68,8 +70,11 @@ function initializeMap() {
 
   console.log('Map initialized successfully');
 
-  // Initialize other components after map is ready
+  // Force map to resize and render properly
   setTimeout(() => {
+    map.invalidateSize();
+    console.log('Map size invalidated');
+
     if (window.mosqueLocations && window.mosqueLocations.length > 0) {
       displayMosques();
     }
@@ -206,10 +211,10 @@ if (distanceSliderMobile) {
   });
 }
 
-// Global function for mobile FAB
+// Global function for mobile FAB - Now implemented
 window.updateSearchRadius = function(radius) {
   currentRadius = radius;
-  if (userLocation) {
+  if (userLocation && map) {
     if (radiusCircle) {
       map.removeLayer(radiusCircle);
     }
@@ -528,8 +533,17 @@ if (findNearbyBtn) {
   findNearbyBtn.addEventListener("click", findNearbyPlaces);
 }
 
-// Find nearby function for mobile FAB
+// Find nearby function for mobile FAB - Now fully implemented
 window.findNearbyPlaces = function() {
+  console.log('Finding nearby places...');
+
+  if (!map) {
+    console.error('Map not initialized yet');
+    alert('Map is still loading, please try again in a moment');
+    return;
+  }
+
+  const statusMsg = document.getElementById('statusMsg');
   if (statusMsg) {
     statusMsg.textContent = "Requesting location access...";
     statusMsg.className = "text-sm font-medium mt-3 text-center text-blue-600";
@@ -568,6 +582,11 @@ window.findNearbyPlaces = function() {
         if (statusMsg) {
           statusMsg.textContent = `Location found! Showing nearby mosques within ${currentRadius} km.`;
           statusMsg.className = "text-sm font-medium mt-3 text-center text-green-600";
+        }
+
+        // Success feedback for mobile
+        if (isMobile) {
+          console.log('Location found successfully');
         }
       },
       function (error) {
@@ -637,8 +656,21 @@ if (searchBtnMobile) {
   });
 }
 
+// Search location - Now fully implemented
 window.searchLocation = function(queryOverride = null) {
-  const searchQuery = queryOverride || (searchInput ? searchInput.value.trim() : '') ||
+  console.log('searchLocation called with:', queryOverride);
+
+  if (!map) {
+    console.error('Map not initialized yet');
+    alert('Map is still loading, please try again in a moment');
+    return;
+  }
+
+  const searchInput = document.getElementById('searchInput');
+  const searchInputMobile = document.getElementById('searchInputMobile');
+
+  const searchQuery = queryOverride ||
+                      (searchInput ? searchInput.value.trim() : '') ||
                       (searchInputMobile ? searchInputMobile.value.trim() : '');
 
   if (!searchQuery) {
@@ -702,5 +734,137 @@ if (suggestionPopup) {
       suggestionPopup.classList.remove('active');
       document.body.style.overflow = 'auto';
     }
+  });
+}
+// ==================== MOBILE-SPECIFIC FUNCTIONALITY ====================
+// Add these at the END of your existing main.js file
+
+// Hamburger Menu
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mobileSidebar = document.getElementById('mobileSidebar');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+if (hamburgerBtn) {
+  hamburgerBtn.addEventListener('click', () => {
+    hamburgerBtn.classList.toggle('active');
+    mobileSidebar.classList.toggle('active');
+    sidebarOverlay.classList.toggle('active');
+  });
+}
+
+if (sidebarOverlay) {
+  sidebarOverlay.addEventListener('click', () => {
+    hamburgerBtn.classList.remove('active');
+    mobileSidebar.classList.remove('active');
+    sidebarOverlay.classList.remove('active');
+  });
+}
+
+// Sidebar Menu Items
+const sidebarViewAll = document.getElementById('sidebarViewAll');
+const sidebarSuggest = document.getElementById('sidebarSuggest');
+
+if (sidebarViewAll) {
+  sidebarViewAll.addEventListener('click', () => {
+    populateMosqueList();
+    mosqueModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    hamburgerBtn.classList.remove('active');
+    mobileSidebar.classList.remove('active');
+    sidebarOverlay.classList.remove('active');
+  });
+}
+
+if (sidebarSuggest) {
+  sidebarSuggest.addEventListener('click', () => {
+    window.open('https://forms.gle/jp5V7YSX4GH7Gwpt6', '_blank');
+    hamburgerBtn.classList.remove('active');
+    mobileSidebar.classList.remove('active');
+    sidebarOverlay.classList.remove('active');
+  });
+}
+
+// FAB Buttons
+const fabLocate = document.getElementById('fabLocate');
+const fabSearch = document.getElementById('fabSearch');
+const bottomSearchPanel = document.getElementById('bottomSearchPanel');
+
+if (fabLocate) {
+  fabLocate.addEventListener('click', () => {
+    findNearbyPlaces();
+  });
+}
+
+if (fabSearch) {
+  fabSearch.addEventListener('click', () => {
+    bottomSearchPanel.classList.toggle('active');
+  });
+}
+
+// Close bottom panel when clicking outside
+document.addEventListener('click', (e) => {
+  if (isMobile &&
+      bottomSearchPanel &&
+      bottomSearchPanel.classList.contains('active') &&
+      !bottomSearchPanel.contains(e.target) &&
+      fabSearch &&
+      !fabSearch.contains(e.target)) {
+    bottomSearchPanel.classList.remove('active');
+  }
+});
+
+// Swipe down to close bottom panel
+let touchStartY = 0;
+let touchEndY = 0;
+
+const searchPanelHandle = document.getElementById('searchPanelHandle');
+const searchPanelContent = document.querySelector('.search-panel-content');
+
+if (bottomSearchPanel) {
+  // Touch events on handle
+  if (searchPanelHandle) {
+    searchPanelHandle.addEventListener('touchstart', (e) => {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    searchPanelHandle.addEventListener('touchmove', (e) => {
+      touchEndY = e.touches[0].clientY;
+    }, { passive: true });
+
+    searchPanelHandle.addEventListener('touchend', () => {
+      const swipeDistance = touchEndY - touchStartY;
+      // If swiped down more than 50px, close the panel
+      if (swipeDistance > 50) {
+        bottomSearchPanel.classList.remove('active');
+      }
+    });
+  }
+
+  // Also allow clicking on the backdrop (area outside panel content)
+  bottomSearchPanel.addEventListener('click', (e) => {
+    if (e.target === bottomSearchPanel) {
+      bottomSearchPanel.classList.remove('active');
+    }
+  });
+}
+
+// Mobile Dark Mode Toggle
+const darkModeToggleMobile = document.getElementById('darkModeToggleMobile');
+
+if (darkModeToggleMobile) {
+  // Sync initial state
+  const isDarkMode = body.classList.contains('dark-mode');
+  darkModeToggleMobile.textContent = isDarkMode ? '☀️' : '🌙';
+
+  darkModeToggleMobile.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    const isDark = body.classList.contains('dark-mode');
+    const icon = isDark ? '☀️' : '🌙';
+
+    // Update both toggles
+    if (darkModeToggle) darkModeToggle.textContent = icon;
+    darkModeToggleMobile.textContent = icon;
+
+    document.cookie = `darkMode=${isDark}; max-age=${365*24*60*60}; path=/`;
   });
 }
