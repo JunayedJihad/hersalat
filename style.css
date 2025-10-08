@@ -14,11 +14,8 @@ body {
 
 
 /* Make admin link in sidebar look like other items */
-@media (max-width: 768px) {
 
-}
-
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .sidebar-item {
     text-decoration: none;
     display: flex;
@@ -787,7 +784,7 @@ body {
 }
 
 /* ==================== DESKTOP VIEW (Original Design) ==================== */
-@media (min-width: 769px) {
+@media (min-width: 1025px) {
   .mobile-view {
     display: none !important;
   }
